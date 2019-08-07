@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "mottox2 <y.mottox2@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jszip": "^3.2.2"
+  }
 }
