@@ -55,14 +55,11 @@ const theme1 = fs.readFileSync('./theme1.xml')
 const presentation = fs.readFileSync('./presentation.xml')
 const slideLayout1 = fs.readFileSync('./slideLayout1.xml')
 const slideMaster1 = fs.readFileSync('./slideMaster1.xml')
-const slide1 = fs.readFileSync('./slideMaster1.xml')
+const slide1 = fs.readFileSync('./slide1.xml')
 
 zip.folder("_rels");
 zip.folder("docProps");
 zip.folder("ppt").folder("_rels");
-// zip.folder("ppt/charts").folder("_rels");
-// zip.folder("ppt/embeddings");
-// zip.folder("ppt/media");
 zip.folder("ppt/slideLayouts").folder("_rels");
 zip.folder("ppt/slideMasters").folder("_rels");
 zip.folder("ppt/slides").folder("_rels");
@@ -90,7 +87,7 @@ zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone
   <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 </Types>
 `);
-// zip.file("_rels/.rels", '');
+
 zip.file("docProps/app.xml", genAppXml([null]));
 zip.file("docProps/core.xml", genCoreXml());
 zip.file("docProps/custom.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -163,4 +160,19 @@ zip.file("ppt/slides/_rels/slide1.xml.rels", `<?xml version="1.0" encoding="UTF-
 </Relationships>
 `)
 
-zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile('results/result.pptx', content, function(){} ); });
+zip.file("_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+  <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties" Target="docProps/custom.xml"/>
+</Relationships>
+`)
+
+
+const VERSION = 3
+
+zip.generateAsync({type:'nodebuffer'}).then(function(content){
+  fs.writeFile(`results/result-${VERSION}.pptx`, content, function(){} );
+  fs.writeFile(`results/result-${VERSION}.zip`, content, function(){} );
+});
