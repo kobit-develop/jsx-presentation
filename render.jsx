@@ -5,18 +5,6 @@ const format = require('xml-formatter');
 const convert = require('xml-js')
 const h = React.createElement
 
-// input
-// jsx to renderer-json
-const json = testRenderer.create(
-  <slide>
-    <text>
-      aabbaa
-    </text>
-  </slide>
-).toJSON()
-
-// TODO: Calc layout props
-
 // renderer-json to xml
 const renderer = (node) => {
   if (typeof(node) == 'string') return node
@@ -105,7 +93,7 @@ const renderer = (node) => {
                   u: 'none'
                 }, [
                   h('a:solidFill', {},
-                    h('a:srgbClr', { val: 'E06B20'},
+                    h('a:srgbClr', { val: node.props.color},
                       h('a:alpha', { val: '100.00%' })
                     )
                   ),
@@ -131,10 +119,18 @@ const renderer = (node) => {
   return null
 }
 
-// output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
-const reactXml = ReactDOMServer.renderToString(renderer(json))
+const render = (tree) => {
+  // jsx to renderer-json
+  const json = testRenderer.create(tree).toJSON()
+// TODO: Calc layout props
+  // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
+  const reactXml = ReactDOMServer.renderToString(renderer(json))
+  // Remove closing tag
+  const xmlStructure = convert.xml2js(reactXml);
+  delete xmlStructure.elements[0].attributes['data-reactroot']
+  const result = format(convert.js2xml(xmlStructure))
+  // console.log(result)
+  return result
+}
 
-// Remove closing tag
-const resultXml = convert.js2xml(convert.xml2js(reactXml))
-
-module.exports = format(resultXml)
+module.exports = render

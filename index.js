@@ -1,7 +1,8 @@
+const React = require('react')
 const fs = require('fs')
 const JSZip = require('jszip')
 
-const slideXml = require('./render')
+const render = require('./render')
 
 const zip = new JSZip()
 
@@ -155,8 +156,6 @@ zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", `<?xml version="1.0" en
 </Relationships>
 `)
 
-zip.file("ppt/slides/slide1.xml",  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slideXml)
-// zip.file("ppt/slides/slide1.xml", slide1)
 zip.file("ppt/slides/_rels/slide1.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
@@ -172,7 +171,16 @@ zip.file("_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 </Relationships>
 `)
 
-const VERSION = 7
+const VERSION = Number(new Date())
+
+const tree = <slide>
+   <text color="ff0000">
+     sample
+   </text>
+</slide>
+
+// zip.file("ppt/slides/slide1.xml",  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slideXml)
+zip.file("ppt/slides/slide1.xml", render(tree))
 
 zip.generateAsync({type:'nodebuffer'}).then(function(content){
   fs.writeFile(`results/result-${VERSION}.pptx`, content, function(){} );
