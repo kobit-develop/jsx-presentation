@@ -54,11 +54,11 @@ const genCoreXml = () => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?
 </cp:coreProperties>
 `
 
-const theme1 = fs.readFileSync('./theme1.xml')
-const presentation = fs.readFileSync('./presentation.xml')
-const slideLayout1 = fs.readFileSync('./slideLayout1.xml')
-const slideMaster1 = fs.readFileSync('./slideMaster1.xml')
-const slide1 = fs.readFileSync('./slide1.xml')
+const theme1 = fs.readFileSync('./xml/theme1.xml')
+const presentation = fs.readFileSync('./xml/presentation.xml')
+const slideLayout1 = fs.readFileSync('./xml/slideLayout1.xml')
+const slideMaster1 = fs.readFileSync('./xml/slideMaster1.xml')
+const slide1 = fs.readFileSync('./xml/slide1.xml')
 
 zip.folder("_rels");
 zip.folder("docProps");
@@ -181,6 +181,8 @@ const tree = <slide>
 
 // zip.file("ppt/slides/slide1.xml",  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slideXml)
 zip.file("ppt/slides/slide1.xml", render(tree))
+
+console.log(render(tree))
 
 zip.generateAsync({type:'nodebuffer'}).then(function(content){
   fs.writeFile(`results/result-${VERSION}.pptx`, content, function(){} );
