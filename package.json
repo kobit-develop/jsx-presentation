@@ -10,7 +10,9 @@
     "jszip": "^3.2.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-test-renderer": "^16.8.6"
+    "react-test-renderer": "^16.8.6",
+    "xml-formatter": "^1.1.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@babel/node": "^7.5.5"

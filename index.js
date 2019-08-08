@@ -1,6 +1,8 @@
 const fs = require('fs')
 const JSZip = require('jszip')
 
+const slideXml = require('./render')
+
 const zip = new JSZip()
 
 const genAppXml = (slides = [], companyName = 'My Corp') => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -153,7 +155,8 @@ zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", `<?xml version="1.0" en
 </Relationships>
 `)
 
-zip.file("ppt/slides/slide1.xml", slide1)
+zip.file("ppt/slides/slide1.xml",  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slideXml)
+// zip.file("ppt/slides/slide1.xml", slide1)
 zip.file("ppt/slides/_rels/slide1.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
@@ -169,8 +172,7 @@ zip.file("_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 </Relationships>
 `)
 
-
-const VERSION = 3
+const VERSION = 7
 
 zip.generateAsync({type:'nodebuffer'}).then(function(content){
   fs.writeFile(`results/result-${VERSION}.pptx`, content, function(){} );
