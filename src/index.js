@@ -177,10 +177,11 @@ const tree = <slide>
    <text color="ff0000">
      sample
    </text>
+   <table/>
 </slide>
 
 // zip.file("ppt/slides/slide1.xml",  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slideXml)
-zip.file("ppt/slides/slide1.xml", render(tree))
+zip.file("ppt/slides/slide1.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + render(tree))
 
 console.log(render(tree))
 
