@@ -177,13 +177,22 @@ const tree = <slide>
    <text color="ff0000">
      sample
    </text>
-   <table/>
+   <table>
+     <tr>
+      <td>aaa</td>
+      <td>bbb</td>
+     </tr>
+     <tr>
+      <td>ccc</td>
+      <td>ddd</td>
+     </tr>
+    </table>
 </slide>
 
 // zip.file("ppt/slides/slide1.xml",  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slideXml)
 zip.file("ppt/slides/slide1.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + render(tree))
 
-console.log(render(tree))
+// console.log(render(tree))
 
 zip.generateAsync({type:'nodebuffer'}).then(function(content){
   fs.writeFile(`results/result-${VERSION}.pptx`, content, function(){} );

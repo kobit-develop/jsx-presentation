@@ -1,7 +1,88 @@
 const React = require('react')
 const h = React.createElement
 
+
+const TableRow = (attrs, node) => {
+  return h('a:tr', { h: attrs.rowHeight }, [
+    h('a:tc', {}, [
+      h('a:txBody', {}, [
+        h('a:bodyPr', {}),
+        h('a:lstStyle', {}),
+        h('a:p', {}, [
+          h('a:r', {}, [
+            h('a:rPr', {
+              kumimoji: '1',
+              lang: 'en-US',
+              altLang: 'ja-JP',
+              dirty: '0'
+            }),
+            h('a:t', {}, 1)
+          ]),
+          h('a:endParaRPr', {
+            kumimoji: '1',
+            lang: 'ja-JP',
+            altLang: 'en-US'
+          })
+        ])
+      ]),
+      h('a:tcPr', {})
+    ]),
+    h('a:tc', {}, [
+      h('a:txBody', {}, [
+        h('a:bodyPr', {}),
+        h('a:lstStyle', {}),
+        h('a:p', {}, [
+          h('a:r', {}, [
+            h('a:rPr', {
+              kumimoji: '1',
+              lang: 'en-US',
+              altLang: 'ja-JP',
+              dirty: '0'
+            }),
+            h('a:t', {}, 2)
+          ]),
+          h('a:endParaRPr', {
+            kumimoji: '1',
+            lang: 'ja-JP',
+            altLang: 'en-US'
+          })
+        ])
+      ]),
+      h('a:tcPr', {})
+    ]),
+    h(
+      'a:extLst',
+      {},
+      h(
+        'a:ext',
+        {
+          uri: '{0D108BD9-81ED-4DB2-BD59-A6C34878D82A}'
+        },
+        h('a16:colId', {
+          'xmlns:a16': 'http://schemas.microsoft.com/office/drawing/2014/main',
+          val: '437548391'
+        })
+      )
+    )
+  ])
+}
+
 const render = node => {
+  console.log('[DEBUG]',JSON.stringify(node, null ,2))
+  const width = 8128000
+  const height = 741680
+  const colCount = 2
+  const colWidth = width / colCount
+  const rowCount = 2
+  const rowHeight = height / rowCount
+
+  const rows = node.children
+  node.children.forEach(row => {
+    if (row.type !== 'tr') {
+      console.error('')
+    }
+  })
+
   return h('p:graphicFrame', {}, [
     h('p:nvGraphicFramePr', {}, [
       h(
@@ -42,7 +123,7 @@ const render = node => {
     ]),
     h('p:xfrm', {}, [
       h('a:off', { x: 1028147, y: 2200598 }),
-      h('a:ext', { cx: 8128000, cy: 741680 })
+      h('a:ext', { cx: width, cy: height })
     ]),
     h(
       'a:graphic',
@@ -65,7 +146,7 @@ const render = node => {
           h('a:tblGrid', {}, [
             h(
               'a:gridCol',
-              { w: 4064000 },
+              { w: colWidth },
               h(
                 'a:extLst',
                 {},
@@ -81,7 +162,7 @@ const render = node => {
             ),
             h(
               'a:gridCol',
-              { w: 4064000 },
+              { w: colWidth },
               h(
                 'a:extLst',
                 {},
@@ -96,136 +177,8 @@ const render = node => {
               )
             )
           ]),
-          h('a:tr', { h: 370840 }, [
-            h('a:tc', {}, [
-              h('a:txBody', {}, [
-                h('a:bodyPr', {}),
-                h('a:lstStyle', {}),
-                h('a:p', {}, [
-                  h('a:r', {}, [
-                    h('a:rPr', {
-                      kumimoji: '1',
-                      lang: 'en-US',
-                      altLang: 'ja-JP',
-                      dirty: '0'
-                    }),
-                    h('a:t', {}, 1)
-                  ]),
-                  h('a:endParaRPr', {
-                    kumimoji: '1',
-                    lang: 'ja-JP',
-                    altLang: 'en-US'
-                  })
-                ])
-              ]),
-              h('a:tcPr', {})
-            ]),
-            h('a:tc', {}, [
-              h('a:txBody', {}, [
-                h('a:bodyPr', {}),
-                h('a:lstStyle', {}),
-                h('a:p', {}, [
-                  h('a:r', {}, [
-                    h('a:rPr', {
-                      kumimoji: '1',
-                      lang: 'en-US',
-                      altLang: 'ja-JP',
-                      dirty: '0'
-                    }),
-                    h('a:t', {}, 2)
-                  ]),
-                  h('a:endParaRPr', {
-                    kumimoji: '1',
-                    lang: 'ja-JP',
-                    altLang: 'en-US'
-                  })
-                ])
-              ]),
-              h('a:tcPr', {})
-            ]),
-            h(
-              'a:extLst',
-              {},
-              h(
-                'a:ext',
-                {
-                  uri: '{0D108BD9-81ED-4DB2-BD59-A6C34878D82A}'
-                },
-                h('a16:colId', {
-                  'xmlns:a16': 'http://schemas.microsoft.com/office/drawing/2014/main',
-                  val: '437548391'
-                })
-              )
-            )
-          ]),
-          h(
-            'a:tr',
-            {
-              h: '370840'
-            },
-            [
-              h('a:tc', {}, [
-                h('a:txBody', {}, [
-                  h('a:bodyPr', {}),
-                  h('a:lstStyle', {}),
-                  h('a:p', {}, [
-                    h('a:r', {}, [
-                      h('a:rPr', {
-                        kumimoji: '1',
-                        lang: 'en-US',
-                        altLang: 'ja-JP',
-                        dirty: '0'
-                      }),
-                      h('a:t', {}, 3)
-                    ]),
-                    h('a:endParaRPr', {
-                      kumimoji: '1',
-                      lang: 'ja-JP',
-                      altLang: 'en-US'
-                    })
-                  ])
-                ]),
-                h('a:tcPr', {})
-              ]),
-              h('a:tc', {}, [
-                h('a:txBody', {}, [
-                  h('a:bodyPr', {}),
-                  h('a:lstStyle', {}),
-                  h('a:p', {}, [
-                    h('a:r', {}, [
-                      h('a:rPr', {
-                        kumimoji: '1',
-                        lang: 'en-US',
-                        altLang: 'ja-JP',
-                        dirty: '0'
-                      }),
-                      h('a:t', {}, 4)
-                    ]),
-                    h('a:endParaRPr', {
-                      kumimoji: '1',
-                      lang: 'ja-JP',
-                      altLang: 'en-US'
-                    })
-                  ])
-                ]),
-                h('a:tcPr', {})
-              ]),
-              h(
-                'a:extLst',
-                {},
-                h(
-                  'a:ext',
-                  {
-                    uri: '{0D108BD9-81ED-4DB2-BD59-A6C34878D82A}'
-                  },
-                  h('a16:rowId', {
-                    'xmlns:a16': 'http://schemas.microsoft.com/office/drawing/2014/main',
-                    val: '1621802109'
-                  })
-                )
-              )
-            ]
-          )
+          TableRow({ rowHeight }),
+          TableRow({ rowHeight }),
         ])
       )
     )
@@ -234,4 +187,4 @@ const render = node => {
 
 module.exports = render
 
-console.log(render())
+// console.log(render())
