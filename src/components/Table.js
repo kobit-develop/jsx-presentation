@@ -1,55 +1,13 @@
 const React = require('react')
 const h = React.createElement
 
+const TableCell = (attrs, children) => {
+  return h('a:tc', {}, children)
+}
 
-const TableRow = (attrs, node) => {
+const TableRow = (attrs, children) => {
   return h('a:tr', { h: attrs.rowHeight }, [
-    h('a:tc', {}, [
-      h('a:txBody', {}, [
-        h('a:bodyPr', {}),
-        h('a:lstStyle', {}),
-        h('a:p', {}, [
-          h('a:r', {}, [
-            h('a:rPr', {
-              kumimoji: '1',
-              lang: 'en-US',
-              altLang: 'ja-JP',
-              dirty: '0'
-            }),
-            h('a:t', {}, 1)
-          ]),
-          h('a:endParaRPr', {
-            kumimoji: '1',
-            lang: 'ja-JP',
-            altLang: 'en-US'
-          })
-        ])
-      ]),
-      h('a:tcPr', {})
-    ]),
-    h('a:tc', {}, [
-      h('a:txBody', {}, [
-        h('a:bodyPr', {}),
-        h('a:lstStyle', {}),
-        h('a:p', {}, [
-          h('a:r', {}, [
-            h('a:rPr', {
-              kumimoji: '1',
-              lang: 'en-US',
-              altLang: 'ja-JP',
-              dirty: '0'
-            }),
-            h('a:t', {}, 2)
-          ]),
-          h('a:endParaRPr', {
-            kumimoji: '1',
-            lang: 'ja-JP',
-            altLang: 'en-US'
-          })
-        ])
-      ]),
-      h('a:tcPr', {})
-    ]),
+    ...children,
     h(
       'a:extLst',
       {},
@@ -177,8 +135,102 @@ const render = node => {
               )
             )
           ]),
-          TableRow({ rowHeight }),
-          TableRow({ rowHeight }),
+          TableRow({ rowHeight },[
+            TableCell({}, [
+              h('a:txBody', {}, [
+                h('a:bodyPr', {}),
+                h('a:lstStyle', {}),
+                h('a:p', {}, [
+                  h('a:r', {}, [
+                    h('a:rPr', {
+                      kumimoji: '1',
+                      lang: 'en-US',
+                      altLang: 'ja-JP',
+                      dirty: '0'
+                    }),
+                    h('a:t', {}, 12)
+                  ]),
+                  h('a:endParaRPr', {
+                    kumimoji: '1',
+                    lang: 'ja-JP',
+                    altLang: 'en-US'
+                  })
+                ])
+              ]),
+              h('a:tcPr', {})
+            ]),
+            TableCell({}, [
+              h('a:txBody', {}, [
+                h('a:bodyPr', {}),
+                h('a:lstStyle', {}),
+                h('a:p', {}, [
+                  h('a:r', {}, [
+                    h('a:rPr', {
+                      kumimoji: '1',
+                      lang: 'en-US',
+                      altLang: 'ja-JP',
+                      dirty: '0'
+                    }),
+                    h('a:t', {}, 12)
+                  ]),
+                  h('a:endParaRPr', {
+                    kumimoji: '1',
+                    lang: 'ja-JP',
+                    altLang: 'en-US'
+                  })
+                ])
+              ]),
+              h('a:tcPr', {})
+            ])
+          ]),
+          TableRow({ rowHeight },[
+            TableCell({}, [
+              h('a:txBody', {}, [
+                h('a:bodyPr', {}),
+                h('a:lstStyle', {}),
+                h('a:p', {}, [
+                  h('a:r', {}, [
+                    h('a:rPr', {
+                      kumimoji: '1',
+                      lang: 'en-US',
+                      altLang: 'ja-JP',
+                      dirty: '0'
+                    }),
+                    h('a:t', {}, 12)
+                  ]),
+                  h('a:endParaRPr', {
+                    kumimoji: '1',
+                    lang: 'ja-JP',
+                    altLang: 'en-US'
+                  })
+                ])
+              ]),
+              h('a:tcPr', {})
+            ]),
+            TableCell({}, [
+              h('a:txBody', {}, [
+                h('a:bodyPr', {}),
+                h('a:lstStyle', {}),
+                h('a:p', {}, [
+                  h('a:r', {}, [
+                    h('a:rPr', {
+                      kumimoji: '1',
+                      lang: 'en-US',
+                      altLang: 'ja-JP',
+                      dirty: '0'
+                    }),
+                    h('a:t', {}, 12)
+                  ]),
+                  h('a:endParaRPr', {
+                    kumimoji: '1',
+                    lang: 'ja-JP',
+                    altLang: 'en-US'
+                  })
+                ])
+              ]),
+              h('a:tcPr', {})
+            ])
+          ]),
         ])
       )
     )
