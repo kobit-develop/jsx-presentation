@@ -3,6 +3,7 @@ const ReactDOMServer = require('react-dom/server')
 const testRenderer = require('react-test-renderer')
 const format = require('xml-formatter')
 const convert = require('xml-js')
+const yoga = require('yoga-layout')
 const h = React.createElement
 
 const Table = require('./components/Table')
@@ -10,6 +11,7 @@ const Table = require('./components/Table')
 // renderer-json to xml
 const renderer = node => {
   if (typeof node == 'string') return node
+  const { layout } = node
   switch (node.type) {
     case 'slide':
       return h(
@@ -77,8 +79,8 @@ const renderer = node => {
           'p:spPr',
           {},
           h('a:xfrm', {}, [
-            h('a:off', { x: '1619250', y: '1714500' }),
-            h('a:ext', { cx: '5715000', cy: '2857500' })
+            h('a:off', { x: layout.left, y: layout.top }),
+            h('a:ext', { cx: layout.width, cy: layout.height })
           ]),
           h('a:prstGeom', { prst: 'rect' }, [h('a:avLst')]),
           h('a:noFill')
@@ -147,12 +149,49 @@ const renderer = node => {
   return null
 }
 
+const calcLayout = tree => {
+  const slideWidth = 9144000
+  const slideHeight = 6858000
+
+  const root = yoga.Node.create()
+  root.setWidth(slideWidth)
+  root.setHeight(slideHeight)
+
+  const nodes = tree.children.map((child, index) => {
+    const node = yoga.Node.create()
+    const {height, flexGrow} = child.props
+    // console.log(child.props)
+    if (height) {
+      node.setHeight(height)
+    }
+    if (flexGrow) {
+      node.setFlexGrow(flexGrow)
+    }
+    root.insertChild(node, index)
+    child.layout = {
+      _node: node
+    }
+    return node
+  })
+
+  root.calculateLayout(slideWidth, slideHeight)
+
+  // console.log(root.getComputedLayout())
+
+  tree.children.map(child => {
+    child.layout = child.layout._node.getComputedLayout()
+    // console.log(child)
+  })
+}
+
 const render = tree => {
   // jsx to renderer-json
   const json = testRenderer.create(tree).toJSON()
+  const layoutedJson = calcLayout(json)
   // TODO: Calc layout props
   // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
   const reactXml = ReactDOMServer.renderToString(renderer(json))
+  // console.log(JSON.stringify(reactXml, null , 2))
   // Remove closing tag
   const xmlStructure = convert.xml2js(reactXml)
   delete xmlStructure.elements[0].attributes['data-reactroot']

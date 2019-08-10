@@ -27,7 +27,17 @@ const TableText = (attrs, text) => {
 
 /** @type {(attrs: any, children: React.ReactNode[]) => React.ReactNode} */
 const TableCell = (attrs, children) => {
-  return h('a:tc', {}, [...children, h('a:tcPr', {})])
+  const cellProps = [
+    attrs.backgroundColor &&
+      h('a:solidFill', {}, [
+        h('a:srgbClr', { val: attrs.backgroundColor }, [h('a:alpha', { val: '100.00%' })])
+      ])
+  ].filter(property => property)
+
+  return h('a:tc', {}, [
+    ...children,
+    h('a:tcPr', {}, cellProps)
+  ])
 }
 
 /** @type {(attrs: any, children: React.ReactNode[]) => React.ReactNode} */
@@ -54,8 +64,7 @@ const TableRow = (attrs, children) => {
 /** @type {(node: ReactTestRendererJSON) => React.ReactNode} */
 const render = node => {
   console.log('[DEBUG]', JSON.stringify(node, null, 2))
-  const width = 4064000
-  const height = 74168
+  const { width, height, left, top } = node.layout
 
   if (!node.children) {
     return null
@@ -112,7 +121,7 @@ const render = node => {
         )
       )
     ]),
-    h('p:xfrm', {}, [h('a:off', { x: 0, y: 0 }), h('a:ext', { cx: width, cy: height })]),
+    h('p:xfrm', {}, [h('a:off', { x: left, y: top }), h('a:ext', { cx: width, cy: height })]),
     h(
       'a:graphic',
       {},
@@ -158,7 +167,7 @@ const render = node => {
             return TableRow(
               { rowHeight },
               row.children.map(cell => {
-                return TableCell({}, [TableText({}, cell.children)])
+                return TableCell(cell.props, [TableText({}, cell.children)])
               })
             )
           })
