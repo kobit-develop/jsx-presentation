@@ -7,6 +7,7 @@ const yoga = require('yoga-layout')
 const h = React.createElement
 
 const Table = require('./components/Table')
+const Text = require('./components/Text')
 
 // renderer-json to xml
 const renderer = node => {
@@ -64,82 +65,7 @@ const renderer = node => {
     case 'table':
       return Table(node)
     case 'text':
-      return h('p:sp', {}, [
-        h('p:nvSpPr', {}, [
-          h('p:cNvPr', {
-            id: 4,
-            name: ''
-          }),
-          h('p:cNvSpPr', {
-            txBox: 1
-          }),
-          h('p:nvPr')
-        ]),
-        h(
-          'p:spPr',
-          {},
-          h('a:xfrm', {}, [
-            h('a:off', { x: layout.left, y: layout.top }),
-            h('a:ext', { cx: layout.width, cy: layout.height })
-          ]),
-          h('a:prstGeom', { prst: 'rect' }, [h('a:avLst')]),
-          h('a:noFill')
-        ),
-        h('p:txBody', {}, [
-          h(
-            'a:bodyPr',
-            {
-              rtlCol: 0,
-              bIns: '45720',
-              lIns: '91440',
-              rIns: '91440',
-              tIns: '45720'
-            },
-            h('a:spAutoFit')
-          ),
-          h('a:lstStyle'),
-          h('a:p', {}, [
-            h(
-              'a:pPr',
-              {
-                algn: 'l',
-                fontAlgn: 'base',
-                marL: '0',
-                marR: '0',
-                indent: '0',
-                lvl: '0'
-              },
-              h('a:lnSpc', {}, h('a:spcPct', { val: '100%' }))
-            ),
-            h('a:r', {}, [
-              h(
-                'a:rPr',
-                {
-                  lang: 'en-US',
-                  b: 1,
-                  sz: 6000,
-                  spc: 0,
-                  u: 'none'
-                },
-                [
-                  h(
-                    'a:solidFill',
-                    {},
-                    h('a:srgbClr', { val: node.props.color }, h('a:alpha', { val: '100.00%' }))
-                  ),
-                  h('a:latin', { typeface: 'Calibri' })
-                ]
-              ),
-              h('a:t', {
-                dangerouslySetInnerHTML: {
-                  __html: node.children
-                }
-              })
-            ])
-          ])
-        ])
-      ])
-    // <p>{node.children.map(child => renderer(child))}</p>
+      return Text(node)
     case 'bold':
       return <b dangerouslySetInnerHTML={{ __html: '' }}>{node.children}</b>
     default:
@@ -191,7 +117,7 @@ const render = tree => {
   // TODO: Calc layout props
   // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
   const reactXml = ReactDOMServer.renderToString(renderer(json))
-  // console.log(JSON.stringify(reactXml, null , 2))
+  console.log(JSON.stringify(reactXml, null , 2))
   // Remove closing tag
   const xmlStructure = convert.xml2js(reactXml)
   delete xmlStructure.elements[0].attributes['data-reactroot']
