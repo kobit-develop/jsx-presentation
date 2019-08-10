@@ -55,7 +55,7 @@ const TableRow = (attrs, children) => {
 const render = node => {
   console.log('[DEBUG]', JSON.stringify(node, null, 2))
   const width = 4064000
-  const height = 741684
+  const height = 74168
 
   if (!node.children) {
     return null

@@ -232,7 +232,11 @@ zip.file(
 
 // console.log(render(tree))
 
+const execSync = require('child_process').execSync
+
 zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
-  fs.writeFile(`results/result-${VERSION}.pptx`, content, function() {})
-  fs.writeFile(`results/result-${VERSION}.zip`, content, function() {})
+  fs.writeFile(`results/result-${VERSION}.pptx`, content, function() {
+    execSync(`open results/result-${VERSION}.pptx`)
+  })
+  // fs.writeFile(`results/result-${VERSION}.zip`, content, function() {})
 })
