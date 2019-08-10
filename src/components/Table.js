@@ -1,10 +1,36 @@
-const React = require('react')
+import * as React from 'react'
+import { ReactTestRendererJSON } from 'react-test-renderer'
 const h = React.createElement
 
-const TableCell = (attrs, children) => {
-  return h('a:tc', {}, children)
+const TableText = (attrs, text) => {
+  return h('a:txBody', {}, [
+    h('a:bodyPr', {}),
+    h('a:lstStyle', {}),
+    h('a:p', {}, [
+      h('a:r', {}, [
+        h('a:rPr', {
+          kumimoji: '1',
+          lang: 'en-US',
+          altLang: 'ja-JP',
+          dirty: '0'
+        }),
+        h('a:t', {}, text)
+      ])
+      // h('a:endParaRPr', {
+      //   kumimoji: '1',
+      //   lang: 'ja-JP',
+      //   altLang: 'en-US'
+      // })
+    ])
+  ])
 }
 
+/** @type {(attrs: any, children: React.ReactNode[]) => React.ReactNode} */
+const TableCell = (attrs, children) => {
+  return h('a:tc', {}, [...children, h('a:tcPr', {})])
+}
+
+/** @type {(attrs: any, children: React.ReactNode[]) => React.ReactNode} */
 const TableRow = (attrs, children) => {
   return h('a:tr', { h: attrs.rowHeight }, [
     ...children,
@@ -25,21 +51,28 @@ const TableRow = (attrs, children) => {
   ])
 }
 
+/** @type {(node: ReactTestRendererJSON) => React.ReactNode} */
 const render = node => {
-  console.log('[DEBUG]',JSON.stringify(node, null ,2))
-  const width = 8128000
-  const height = 741680
-  const colCount = 2
-  const colWidth = width / colCount
-  const rowCount = 2
-  const rowHeight = height / rowCount
+  console.log('[DEBUG]', JSON.stringify(node, null, 2))
+  const width = 4064000
+  const height = 741684
 
-  const rows = node.children
+  if (!node.children) {
+    return null
+  }
+  const rows = node.children // as ReactTestRendererJSON[]
   node.children.forEach(row => {
-    if (row.type !== 'tr') {
+    if (typeof row !== 'string' && row.type !== 'tr') {
       console.error('')
     }
   })
+
+  const colCount = rows[0].children.filter(cell => {
+    return typeof cell !== 'string' && cell.type === 'td'
+  }).length
+  const colWidth = width / colCount // 整数値にしないとデータが破損する
+  const rowCount = rows.length
+  const rowHeight = height / rowCount // 整数値にしないとデータが破損する
 
   return h('p:graphicFrame', {}, [
     h('p:nvGraphicFramePr', {}, [
@@ -79,10 +112,7 @@ const render = node => {
         )
       )
     ]),
-    h('p:xfrm', {}, [
-      h('a:off', { x: 1028147, y: 2200598 }),
-      h('a:ext', { cx: width, cy: height })
-    ]),
+    h('p:xfrm', {}, [h('a:off', { x: 0, y: 0 }), h('a:ext', { cx: width, cy: height })]),
     h(
       'a:graphic',
       {},
@@ -101,136 +131,37 @@ const render = node => {
             // NOTE: tableStyles.xml に定義すると使えるようになる。
             // h('a:tableStyleId', {}, '{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}')
           ),
-          h('a:tblGrid', {}, [
-            h(
-              'a:gridCol',
-              { w: colWidth },
-              h(
-                'a:extLst',
-                {},
+          h(
+            'a:tblGrid',
+            {},
+            rows[0].children.map(() => {
+              return h(
+                'a:gridCol',
+                { w: colWidth },
                 h(
-                  'a:ext',
-                  { uri: '{9D8B030D-6E8A-4147-A177-3AD203B41FA5}' },
-                  h('a16:colId', {
-                    'xmlns:a16': 'http://schemas.microsoft.com/office/drawing/2014/main',
-                    val: '1113064350'
-                  })
+                  // https://docs.microsoft.com/ja-jp/dotnet/api/documentformat.openxml.drawing.extensionlist?view=openxml-2.8.1
+                  'a:extLst',
+                  {},
+                  h(
+                    'a:ext',
+                    { uri: '{9D8B030D-6E8A-4147-A177-3AD203B41FA5}' },
+                    h('a16:colId', {
+                      'xmlns:a16': 'http://schemas.microsoft.com/office/drawing/2014/main',
+                      val: '1113064350'
+                    })
+                  )
                 )
               )
-            ),
-            h(
-              'a:gridCol',
-              { w: colWidth },
-              h(
-                'a:extLst',
-                {},
-                h(
-                  'a:ext',
-                  { uri: '{9D8B030D-6E8A-4147-A177-3AD203B41FA5}' },
-                  h('a16:colId', {
-                    'xmlns:a16': 'http://schemas.microsoft.com/office/drawing/2014/main',
-                    val: '1904549289'
-                  })
-                )
-              )
+            })
+          ),
+          rows.map(row => {
+            return TableRow(
+              { rowHeight },
+              row.children.map(cell => {
+                return TableCell({}, [TableText({}, cell.children)])
+              })
             )
-          ]),
-          TableRow({ rowHeight },[
-            TableCell({}, [
-              h('a:txBody', {}, [
-                h('a:bodyPr', {}),
-                h('a:lstStyle', {}),
-                h('a:p', {}, [
-                  h('a:r', {}, [
-                    h('a:rPr', {
-                      kumimoji: '1',
-                      lang: 'en-US',
-                      altLang: 'ja-JP',
-                      dirty: '0'
-                    }),
-                    h('a:t', {}, 12)
-                  ]),
-                  h('a:endParaRPr', {
-                    kumimoji: '1',
-                    lang: 'ja-JP',
-                    altLang: 'en-US'
-                  })
-                ])
-              ]),
-              h('a:tcPr', {})
-            ]),
-            TableCell({}, [
-              h('a:txBody', {}, [
-                h('a:bodyPr', {}),
-                h('a:lstStyle', {}),
-                h('a:p', {}, [
-                  h('a:r', {}, [
-                    h('a:rPr', {
-                      kumimoji: '1',
-                      lang: 'en-US',
-                      altLang: 'ja-JP',
-                      dirty: '0'
-                    }),
-                    h('a:t', {}, 12)
-                  ]),
-                  h('a:endParaRPr', {
-                    kumimoji: '1',
-                    lang: 'ja-JP',
-                    altLang: 'en-US'
-                  })
-                ])
-              ]),
-              h('a:tcPr', {})
-            ])
-          ]),
-          TableRow({ rowHeight },[
-            TableCell({}, [
-              h('a:txBody', {}, [
-                h('a:bodyPr', {}),
-                h('a:lstStyle', {}),
-                h('a:p', {}, [
-                  h('a:r', {}, [
-                    h('a:rPr', {
-                      kumimoji: '1',
-                      lang: 'en-US',
-                      altLang: 'ja-JP',
-                      dirty: '0'
-                    }),
-                    h('a:t', {}, 12)
-                  ]),
-                  h('a:endParaRPr', {
-                    kumimoji: '1',
-                    lang: 'ja-JP',
-                    altLang: 'en-US'
-                  })
-                ])
-              ]),
-              h('a:tcPr', {})
-            ]),
-            TableCell({}, [
-              h('a:txBody', {}, [
-                h('a:bodyPr', {}),
-                h('a:lstStyle', {}),
-                h('a:p', {}, [
-                  h('a:r', {}, [
-                    h('a:rPr', {
-                      kumimoji: '1',
-                      lang: 'en-US',
-                      altLang: 'ja-JP',
-                      dirty: '0'
-                    }),
-                    h('a:t', {}, 12)
-                  ]),
-                  h('a:endParaRPr', {
-                    kumimoji: '1',
-                    lang: 'ja-JP',
-                    altLang: 'en-US'
-                  })
-                ])
-              ]),
-              h('a:tcPr', {})
-            ])
-          ]),
+          })
         ])
       )
     )
@@ -238,5 +169,3 @@ const render = node => {
 }
 
 module.exports = render
-
-// console.log(render())

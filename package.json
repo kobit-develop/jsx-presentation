@@ -6,7 +6,9 @@
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
+    "@types/react-test-renderer": "^16.9.0",
     "jszip": "^3.2.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -15,6 +17,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@babel/node": "^7.5.5"
+    "@babel/node": "^7.5.5",
+    "@types/react": "^16.9.1"
   }
 }

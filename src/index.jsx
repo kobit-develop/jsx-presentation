@@ -6,7 +6,10 @@ const render = require('./render')
 
 const zip = new JSZip()
 
-const genAppXml = (slides = [], companyName = 'My Corp') => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+const genAppXml = (
+  slides = [],
+  companyName = 'My Corp'
+) => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
   <Application>Microsoft Office PowerPoint</Application>
   <Slides>${slides.length}</Slides>
@@ -60,15 +63,17 @@ const slideLayout1 = fs.readFileSync('./xml/slideLayout1.xml')
 const slideMaster1 = fs.readFileSync('./xml/slideMaster1.xml')
 const slide1 = fs.readFileSync('./xml/slide1.xml')
 
-zip.folder("_rels");
-zip.folder("docProps");
-zip.folder("ppt").folder("_rels");
-zip.folder("ppt/slideLayouts").folder("_rels");
-zip.folder("ppt/slideMasters").folder("_rels");
-zip.folder("ppt/slides").folder("_rels");
-zip.folder("ppt/theme");
+zip.folder('_rels')
+zip.folder('docProps')
+zip.folder('ppt').folder('_rels')
+zip.folder('ppt/slideLayouts').folder('_rels')
+zip.folder('ppt/slideMasters').folder('_rels')
+zip.folder('ppt/slides').folder('_rels')
+zip.folder('ppt/theme')
 
-zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+zip.file(
+  '[Content_Types].xml',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
@@ -89,15 +94,21 @@ zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone
   <Default Extension="png" ContentType="image/png"/>
   <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 </Types>
-`);
+`
+)
 
-zip.file("docProps/app.xml", genAppXml([null]));
-zip.file("docProps/core.xml", genCoreXml());
-zip.file("docProps/custom.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+zip.file('docProps/app.xml', genAppXml([null]))
+zip.file('docProps/core.xml', genCoreXml())
+zip.file(
+  'docProps/custom.xml',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"/>
-`);
+`
+)
 
-zip.file("ppt/_rels/presentation.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+zip.file(
+  'ppt/_rels/presentation.xml.rels',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>
@@ -106,11 +117,14 @@ zip.file("ppt/_rels/presentation.xml.rels", `<?xml version="1.0" encoding="UTF-8
   <Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>
   <Relationship Id="rId6" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>
 </Relationships>
-`)
+`
+)
 
-zip.file("ppt/theme/theme1.xml", theme1);
-zip.file("ppt/presentation.xml", presentation);
-zip.file("ppt/presProps.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+zip.file('ppt/theme/theme1.xml', theme1)
+zip.file('ppt/presentation.xml', presentation)
+zip.file(
+  'ppt/presProps.xml',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:presentationPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
   <p:extLst>
     <p:ext uri="{E76CE94A-603C-4142-B9EB-6D1370010A27}">
@@ -121,11 +135,17 @@ zip.file("ppt/presProps.xml", `<?xml version="1.0" encoding="UTF-8" standalone="
     </p:ext>
   </p:extLst>
 </p:presentationPr>
-`);
-zip.file("ppt/tableStyles.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+`
+)
+zip.file(
+  'ppt/tableStyles.xml',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <a:tblStyleLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" def="{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"/>
-`);
-zip.file("ppt/viewProps.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+`
+)
+zip.file(
+  'ppt/viewProps.xml',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:viewPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" showComments="0" lastView="sldView">
   <p:slideViewPr>
     <p:cSldViewPr>
@@ -139,62 +159,80 @@ zip.file("ppt/viewProps.xml", `<?xml version="1.0" encoding="UTF-8" standalone="
     </p:cSldViewPr>
   </p:slideViewPr>
 </p:viewPr>
-`);
+`
+)
 
-zip.file("ppt/slideLayouts/slideLayout1.xml", slideLayout1)
-zip.file("ppt/slideLayouts/_rels/slideLayout1.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+zip.file('ppt/slideLayouts/slideLayout1.xml', slideLayout1)
+zip.file(
+  'ppt/slideLayouts/_rels/slideLayout1.xml.rels',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="../slideMasters/slideMaster1.xml"/>
 </Relationships>
-`)
+`
+)
 
-zip.file("ppt/slideMasters/slideMaster1.xml", slideMaster1)
-zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+zip.file('ppt/slideMasters/slideMaster1.xml', slideMaster1)
+zip.file(
+  'ppt/slideMasters/_rels/slideMaster1.xml.rels',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>
 </Relationships>
-`)
+`
+)
 
-zip.file("ppt/slides/_rels/slide1.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+zip.file(
+  'ppt/slides/_rels/slide1.xml.rels',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
 </Relationships>
-`)
+`
+)
 
-zip.file("_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+zip.file(
+  '_rels/.rels',
+  `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
   <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
   <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties" Target="docProps/custom.xml"/>
 </Relationships>
-`)
+`
+)
 
 const VERSION = Number(new Date())
 
-const tree = <slide>
-   <text color="ff0000">
-     sample
-   </text>
-   <table>
-     <tr>
-      <td>aaa</td>
-      <td>bbb</td>
-     </tr>
-     <tr>
-      <td>ccc</td>
-      <td>ddd</td>
-     </tr>
+const data = [['Date', 'PV'], ['7/24', '123123']]
+const tree = (
+  <slide>
+    <text color="ff0000">sample</text>
+    <table>
+      {data.map(function(row) {
+        return (
+          <tr>
+            {row.map(function(cell) {
+              return <td>{cell}</td>
+            })}
+          </tr>
+        )
+      })}
     </table>
-</slide>
+  </slide>
+)
 
 // zip.file("ppt/slides/slide1.xml",  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slideXml)
-zip.file("ppt/slides/slide1.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + render(tree))
+zip.file(
+  'ppt/slides/slide1.xml',
+  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + render(tree)
+)
 
 // console.log(render(tree))
 
-zip.generateAsync({type:'nodebuffer'}).then(function(content){
-  fs.writeFile(`results/result-${VERSION}.pptx`, content, function(){} );
-  fs.writeFile(`results/result-${VERSION}.zip`, content, function(){} );
-});
+zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
+  fs.writeFile(`results/result-${VERSION}.pptx`, content, function() {})
+  fs.writeFile(`results/result-${VERSION}.zip`, content, function() {})
+})

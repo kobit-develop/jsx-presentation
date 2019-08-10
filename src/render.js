@@ -156,9 +156,7 @@ const render = tree => {
   // Remove closing tag
   const xmlStructure = convert.xml2js(reactXml)
   delete xmlStructure.elements[0].attributes['data-reactroot']
-  const result = format(convert.js2xml(xmlStructure), {
-    indentation: '  '
-  })
+  const result = convert.js2xml(xmlStructure)
   // console.log(result)
   return result
 }
