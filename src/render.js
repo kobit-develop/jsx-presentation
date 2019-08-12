@@ -75,55 +75,71 @@ const renderer = node => {
   return null
 }
 
-const calcLayout = tree => {
-  const slideWidth = 9144000
-  const slideHeight = 6858000
+const rootNode = yoga.Node.create()
+rootNode.setWidth(9144000)
+rootNode.setHeight(6858000)
 
-  const root = yoga.Node.create()
-  root.setWidth(slideWidth)
-  root.setHeight(slideHeight)
-
+const calcLayout = (tree, node = rootNode) => {
+  if (!tree.children) {
+    return
+  }
   const nodes = tree.children.map((child, index) => {
-    const node = yoga.Node.create()
+    if (typeof(child) === 'string') {
+      return
+    }
+
+    const childNode = yoga.Node.create()
     const {height, flexGrow} = child.props
-    // console.log(child.props)
     if (height) {
-      node.setHeight(height)
+      childNode.setHeight(height)
     }
     if (flexGrow) {
-      node.setFlexGrow(flexGrow)
+      childNode.setFlexGrow(flexGrow)
     }
-    root.insertChild(node, index)
+    node.insertChild(childNode, index)
     child.layout = {
-      _node: node
+      _node: childNode
     }
-    return node
+    return childNode
   })
 
-  root.calculateLayout(slideWidth, slideHeight)
-
-  // console.log(root.getComputedLayout())
+  node.calculateLayout(node.getWidth(), node.getHeight())
 
   tree.children.map(child => {
-    child.layout = child.layout._node.getComputedLayout()
-    // console.log(child)
+    if (typeof(child) === 'string') {
+      return
+    }
+    const node = child.layout._node
+    child.layout = {
+      ...child.layout,
+      ...node.getComputedLayout()
+    }
+    node.setWidth(child.layout.width)
+    node.setHeight(child.layout.height)
+    calcLayout(child, node)
   })
 }
 
 const render = tree => {
   // jsx to renderer-json
   const json = testRenderer.create(tree).toJSON()
-  const layoutedJson = calcLayout(json)
-  // TODO: Calc layout props
   // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
-  const reactXml = ReactDOMServer.renderToString(renderer(json))
-  console.log(JSON.stringify(reactXml, null , 2))
-  // Remove closing tag
-  const xmlStructure = convert.xml2js(reactXml)
-  delete xmlStructure.elements[0].attributes['data-reactroot']
-  const result = convert.js2xml(xmlStructure)
+  const slides = json.children.map(slide => {
+    calcLayout(slide)
+    // console.log(JSON.stringify(slide, null, 2))
+    const reactXml = ReactDOMServer.renderToString(renderer(slide))
+    // console.log(JSON.stringify(reactXml, null , 2))
+    // Remove closing tag
+    const xmlStructure = convert.xml2js(reactXml)
+    delete xmlStructure.elements[0].attributes['data-reactroot']
+    const result = convert.js2xml(xmlStructure)
+    return result
+  })
   // console.log(result)
-  return result
+  return {
+    slides
+    // config
+  }
 }
 
 module.exports = render

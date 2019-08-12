@@ -8,20 +8,25 @@ const data = [
 ]
 
 const tree = (
-  <slide>
-    <text color="ff0000" height={1714500}>react-pptx</text>
-    <table flexGrow={1}>
-      {data.map(function(row, rowIndex) {
-        return (
-          <tr>
-            {row.map(function(cell) {
-              return <td backgroundColor={rowIndex === 0 ? 'aabbcc' : 'ffffff'}>{cell}</td>
-            })}
-          </tr>
-        )
-      })}
-    </table>
-  </slide>
+  <presentation>
+    <slide>
+      <text color="ff0000" height={1714500}>react-pptx</text>
+      <table flexGrow={1}>
+        {data.map(function(row, rowIndex) {
+          return (
+            <tr>
+              {row.map(function(cell) {
+                return <td backgroundColor={rowIndex === 0 ? 'aabbcc' : 'ffffff'}>{cell}</td>
+              })}
+            </tr>
+          )
+        })}
+      </table>
+    </slide>
+    <slide>
+      <text>aaa</text>
+    </slide>
+  </presentation>
 )
 
 generate(tree)
