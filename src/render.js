@@ -90,8 +90,6 @@ const calcLayout = (tree, node = rootNode) => {
 
     const childNode = yoga.Node.create()
     const {height, flexGrow} = child.props
-    // console.log('childprops:', child.props)
-    // console.log(child.props)
     if (height) {
       childNode.setHeight(height)
     }

@@ -153,10 +153,6 @@ const generate = (tree) => {
 
   const VERSION = Number(new Date())
 
-  console.log(
-    render(tree)
-  )
-
   const { slides } = render(tree)
 
   slides.forEach((slide, index) => {
@@ -338,8 +334,6 @@ const generate = (tree) => {
     })
     // fs.writeFile(`results/result-${VERSION}.zip`, content, function() {})
   })
-
-
 }
 
 module.exports = generate
