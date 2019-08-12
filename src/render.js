@@ -75,38 +75,49 @@ const renderer = node => {
   return null
 }
 
-const calcLayout = tree => {
-  const slideWidth = 9144000
-  const slideHeight = 6858000
+const rootNode = yoga.Node.create()
+rootNode.setWidth(9144000)
+rootNode.setHeight(6858000)
 
-  const root = yoga.Node.create()
-  root.setWidth(slideWidth)
-  root.setHeight(slideHeight)
-
+const calcLayout = (tree, node = rootNode) => {
   const nodes = tree.children.map((child, index) => {
-    const node = yoga.Node.create()
+    if (typeof(child) === 'string') {
+      return
+    }
+
+    const childNode = yoga.Node.create()
     const {height, flexGrow} = child.props
+    // console.log('childprops:', child.props)
     // console.log(child.props)
     if (height) {
-      node.setHeight(height)
+      childNode.setHeight(height)
     }
     if (flexGrow) {
-      node.setFlexGrow(flexGrow)
+      childNode.setFlexGrow(flexGrow)
     }
-    root.insertChild(node, index)
+    node.insertChild(childNode, index)
     child.layout = {
-      _node: node
+      _node: childNode
     }
-    return node
+    console.log(childNode)
+    return childNode
   })
 
-  root.calculateLayout(slideWidth, slideHeight)
-
-  // console.log(root.getComputedLayout())
+  node.calculateLayout(node.getWidth(), node.getHeight())
 
   tree.children.map(child => {
-    child.layout = child.layout._node.getComputedLayout()
-    // console.log(child)
+    if (typeof(child) === 'string') {
+      return
+    }
+    const node = child.layout._node
+    console.log('Child00', child, child.layout._node)
+    child.layout = {
+      ...child.layout,
+      ...node.getComputedLayout()
+    }
+    node.setWidth(child.layout.width)
+    node.setHeight(child.layout.height)
+    calcLayout(child, node)
   })
 }
 
