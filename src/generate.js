@@ -207,10 +207,18 @@ const generate = (tree) => {
 
   const VERSION = Number(new Date())
 
+  console.log(
+    render(tree)
+  )
+
+  return
+
   zip.file(
     'ppt/slides/slide1.xml',
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + render(tree)
   )
+
+  // return
 
   zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
     fs.writeFile(`results/result-${VERSION}.pptx`, content, function() {

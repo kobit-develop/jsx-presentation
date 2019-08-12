@@ -80,6 +80,9 @@ rootNode.setWidth(9144000)
 rootNode.setHeight(6858000)
 
 const calcLayout = (tree, node = rootNode) => {
+  if (!tree.children) {
+    return
+  }
   const nodes = tree.children.map((child, index) => {
     if (typeof(child) === 'string') {
       return
@@ -99,7 +102,6 @@ const calcLayout = (tree, node = rootNode) => {
     child.layout = {
       _node: childNode
     }
-    console.log(childNode)
     return childNode
   })
 
@@ -110,7 +112,6 @@ const calcLayout = (tree, node = rootNode) => {
       return
     }
     const node = child.layout._node
-    console.log('Child00', child, child.layout._node)
     child.layout = {
       ...child.layout,
       ...node.getComputedLayout()
@@ -124,17 +125,23 @@ const calcLayout = (tree, node = rootNode) => {
 const render = tree => {
   // jsx to renderer-json
   const json = testRenderer.create(tree).toJSON()
-  const layoutedJson = calcLayout(json)
-  // TODO: Calc layout props
   // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
-  const reactXml = ReactDOMServer.renderToString(renderer(json))
-  console.log(JSON.stringify(reactXml, null , 2))
-  // Remove closing tag
-  const xmlStructure = convert.xml2js(reactXml)
-  delete xmlStructure.elements[0].attributes['data-reactroot']
-  const result = convert.js2xml(xmlStructure)
+  const slides = json.children.map(slide => {
+    calcLayout(slide)
+    // console.log(JSON.stringify(slide, null, 2))
+    const reactXml = ReactDOMServer.renderToString(renderer(slide))
+    // console.log(JSON.stringify(reactXml, null , 2))
+    // Remove closing tag
+    const xmlStructure = convert.xml2js(reactXml)
+    delete xmlStructure.elements[0].attributes['data-reactroot']
+    const result = convert.js2xml(xmlStructure)
+    return result
+  })
   // console.log(result)
-  return result
+  return {
+    slides
+    // config
+  }
 }
 
 module.exports = render
