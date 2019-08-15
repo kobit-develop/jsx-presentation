@@ -4,7 +4,6 @@ const h = React.createElement
 
 /** @type {(node: ReactTestRendererJSON) => React.ReactNode} */
 const render = node => {
-  console.log('[DEBUG]', JSON.stringify(node, null, 2))
   const { width, height, left, top } = node.layout
 
   return h('p:sp', {}, [

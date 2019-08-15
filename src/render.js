@@ -45,20 +45,20 @@ const renderer = node => {
               ...node.children.map(child => renderer(child))
             ])
           ),
-          h(
-            'p:extLst',
-            {},
-            h(
-              'p:ext',
-              {
-                uri: '{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}'
-              },
-              h('p14:creationId', {
-                'xmlns:p14': 'http://schemas.microsoft.com/office/powerpoint/2010/main',
-                val: '732554432'
-              })
-            )
-          ),
+          // h(
+          //   'p:extLst',
+          //   {},
+          //   h(
+          //     'p:ext',
+          //     {
+          //       uri: '{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}'
+          //     },
+          //     h('p14:creationId', {
+          //       'xmlns:p14': 'http://schemas.microsoft.com/office/powerpoint/2010/main',
+          //       val: '732554432'
+          //     })
+          //   )
+          // ),
           h('p:clrMapOvr', {}, [h('a:masterClrMapping')])
         ]
       )
@@ -79,23 +79,40 @@ const rootNode = yoga.Node.create()
 rootNode.setWidth(9144000)
 rootNode.setHeight(6858000)
 
+const setLayoutProps = (node, props) => {
+  const {width, height, flexGrow, padding} = props
+  // console.log(height, flexGrow, padding)
+  if (padding) {
+    node.setPadding(yoga.EDGE_TOP, padding)
+    node.setPadding(yoga.EDGE_RIGHT, padding)
+    node.setPadding(yoga.EDGE_BOTTOM, padding)
+    node.setPadding(yoga.EDGE_LEFT, padding)
+  }
+  if (height) { node.setHeight(height) }
+  if (width) { node.setWidth(width) }
+  node.setFlexDirection(yoga.FLEX_DIRECTION_COLUMN)
+  if (flexGrow) { node.setFlexGrow(flexGrow) }
+  // node.setFlexGrow(1)
+}
+
 const calcLayout = (tree, node = rootNode) => {
   if (!tree.children) {
     return
   }
+
+  setLayoutProps(node, tree.props)
+  // TODO: defaultProps的なものを用意する
+  if (tree.type === 'tr') {
+    node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
+  }
+
   const nodes = tree.children.map((child, index) => {
     if (typeof(child) === 'string') {
       return
     }
 
     const childNode = yoga.Node.create()
-    const {height, flexGrow} = child.props
-    if (height) {
-      childNode.setHeight(height)
-    }
-    if (flexGrow) {
-      childNode.setFlexGrow(flexGrow)
-    }
+    setLayoutProps(childNode, child.props)
     node.insertChild(childNode, index)
     child.layout = {
       _node: childNode
@@ -133,6 +150,7 @@ const render = tree => {
     const xmlStructure = convert.xml2js(reactXml)
     delete xmlStructure.elements[0].attributes['data-reactroot']
     const result = convert.js2xml(xmlStructure)
+    // console.log(result)
     return result
   })
   // console.log(result)

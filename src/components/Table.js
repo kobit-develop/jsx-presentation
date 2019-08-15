@@ -63,7 +63,6 @@ const TableRow = (attrs, children) => {
 
 /** @type {(node: ReactTestRendererJSON) => React.ReactNode} */
 const render = node => {
-  console.log('[DEBUG]', JSON.stringify(node, null, 2))
   const { width, height, left, top } = node.layout
 
   if (!node.children) {
@@ -75,13 +74,6 @@ const render = node => {
       console.error('')
     }
   })
-
-  const colCount = rows[0].children.filter(cell => {
-    return typeof cell !== 'string' && cell.type === 'td'
-  }).length
-  const colWidth = width / colCount // 整数値にしないとデータが破損する
-  const rowCount = rows.length
-  const rowHeight = height / rowCount // 整数値にしないとデータが破損する
 
   return h('p:graphicFrame', {}, [
     h('p:nvGraphicFramePr', {}, [
@@ -143,10 +135,10 @@ const render = node => {
           h(
             'a:tblGrid',
             {},
-            rows[0].children.map(() => {
+            rows[0].children.map((cell) => {
               return h(
                 'a:gridCol',
-                { w: colWidth },
+                { w: cell.layout.width },
                 h(
                   // https://docs.microsoft.com/ja-jp/dotnet/api/documentformat.openxml.drawing.extensionlist?view=openxml-2.8.1
                   'a:extLst',
@@ -165,7 +157,7 @@ const render = node => {
           ),
           rows.map(row => {
             return TableRow(
-              { rowHeight },
+              { rowHeight: row.layout.height },
               row.children.map(cell => {
                 return TableCell(cell.props, [TableText({}, cell.children)])
               })
