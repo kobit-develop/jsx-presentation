@@ -4,6 +4,7 @@ const h = React.createElement
 
 /** @type {(node: ReactTestRendererJSON) => React.ReactNode} */
 const render = node => {
+  const { fontSize, color, bold } = node.props
   const { width, height, left, top } = node.layout
 
   return h('p:sp', {}, [
@@ -58,8 +59,8 @@ const render = node => {
             'a:rPr',
             {
               lang: 'en-US',
-              b: 1,
-              sz: 6000,
+              b: bold ? 1 : 0,
+              sz: fontSize * 100,
               spc: 0,
               u: 'none'
             },
@@ -67,7 +68,7 @@ const render = node => {
               h(
                 'a:solidFill',
                 {},
-                h('a:srgbClr', { val: node.props.color }, h('a:alpha', { val: '100.00%' }))
+                h('a:srgbClr', { val: color }, h('a:alpha', { val: '100.00%' }))
               ),
               h('a:latin', { typeface: 'Calibri' })
             ]

@@ -8,10 +8,17 @@ const data = [
   ['7/25', '98329'],
 ]
 
+const PageHeader = ({ title, description }) => {
+  return <>
+    <text color="333333" fontSize={16} bold height={320000}>{title}</text>
+    <text color="666666" fontSize={12} height={714500}>{description}</text>
+  </>
+}
+
 const tree = (
   <presentation>
     <slide padding={300000}>
-      <text color="ff0000" height={1714500}>react-pptx</text>
+      <PageHeader title="タイトル" description="説明文" />
       <table flexGrow={1}>
         {data.map(function(row, rowIndex) {
           return (
@@ -23,10 +30,10 @@ const tree = (
           )
         })}
       </table>
+      <text color="666666" fontSize={12} height={320000}>ページの説明文がきます。</text>
     </slide>
     <slide>
-      <text color="F96332" height={1714500}>react-pptx</text>
-      <text color="004480" height={1714500}>react-pptx</text>
+      <PageHeader title="ページごとにタイトルを変えたいことってあるよね" description="説明文も書ける" />
     </slide>
   </presentation>
 )
