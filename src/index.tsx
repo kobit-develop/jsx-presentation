@@ -1,5 +1,5 @@
-const React = require('react')
-const generate = require('./generate')
+import React from 'react'
+import generate from './generate'
 
 const data = [
   ['Date', 'PV'],
@@ -8,7 +8,12 @@ const data = [
   ['7/25', '98329'],
 ]
 
-const PageHeader = ({ title, description }) => {
+interface PageHeaderProps {
+  title: string
+  description: string
+}
+
+const PageHeader: React.FC<PageHeaderProps> = ({ title, description }) => {
   return <>
     <text color="333333" fontSize={16} bold height={320000}>{title}</text>
     <text color="666666" fontSize={12} height={714500}>{description}</text>
