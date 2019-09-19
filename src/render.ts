@@ -1,18 +1,17 @@
-const React = require('react')
-const ReactDOMServer = require('react-dom/server')
-const testRenderer = require('react-test-renderer')
-const format = require('xml-formatter')
-const convert = require('xml-js')
-const yoga = require('yoga-layout')
+import React from 'react'
+import ReactDOMServer from 'react-dom/server'
+import testRenderer, { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
+import convert from 'xml-js'
+import yoga, { YogaNode } from 'yoga-layout'
+
+import Table from './components/Table'
+import Text from './components/Text'
+
 const h = React.createElement
 
-const Table = require('./components/Table')
-const Text = require('./components/Text')
-
 // renderer-json to xml
-const renderer = node => {
+const renderer: any = (node: ReactTestRendererJSON | string) => {
   if (typeof node == 'string') return node
-  const { layout } = node
   switch (node.type) {
     case 'slide':
       return h(
@@ -42,23 +41,9 @@ const renderer = node => {
                   h('a:chExt', { cx: '0', cy: '0' })
                 ])
               ),
-              ...node.children.map(child => renderer(child))
+              ...node.children!.map(child => renderer(child))
             ])
           ),
-          // h(
-          //   'p:extLst',
-          //   {},
-          //   h(
-          //     'p:ext',
-          //     {
-          //       uri: '{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}'
-          //     },
-          //     h('p14:creationId', {
-          //       'xmlns:p14': 'http://schemas.microsoft.com/office/powerpoint/2010/main',
-          //       val: '732554432'
-          //     })
-          //   )
-          // ),
           h('p:clrMapOvr', {}, [h('a:masterClrMapping')])
         ]
       )
@@ -66,21 +51,23 @@ const renderer = node => {
       return Table(node)
     case 'text':
       return Text(node)
-    case 'bold':
-      return <b dangerouslySetInnerHTML={{ __html: '' }}>{node.children}</b>
     default:
       console.log('unknown node: ' + node.type)
-      return <img src="" />
+      return null
   }
-  return null
 }
 
 const rootNode = yoga.Node.create()
 rootNode.setWidth(9144000)
 rootNode.setHeight(6858000)
 
-const setLayoutProps = (node, props) => {
-  const {width, height, flexGrow, padding} = props
+const setLayoutProps = (
+  node: YogaNode,
+  props: {
+    [key: string]: any
+  }
+) => {
+  const { width, height, flexGrow, padding } = props
   // console.log(height, flexGrow, padding)
   if (padding) {
     node.setPadding(yoga.EDGE_TOP, padding)
@@ -88,15 +75,21 @@ const setLayoutProps = (node, props) => {
     node.setPadding(yoga.EDGE_BOTTOM, padding)
     node.setPadding(yoga.EDGE_LEFT, padding)
   }
-  if (height) { node.setHeight(height) }
-  if (width) { node.setWidth(width) }
+  if (height) {
+    node.setHeight(height)
+  }
+  if (width) {
+    node.setWidth(width)
+  }
   node.setFlexDirection(yoga.FLEX_DIRECTION_COLUMN)
-  if (flexGrow) { node.setFlexGrow(flexGrow) }
+  if (flexGrow) {
+    node.setFlexGrow(flexGrow)
+  }
   // node.setFlexGrow(1)
 }
 
-const calcLayout = (tree, node = rootNode) => {
-  if (!tree.children) {
+const calcLayout = (tree: ReactTestRendererNode, node = rootNode) => {
+  if (typeof tree === 'string' || !tree.children) {
     return
   }
 
@@ -106,8 +99,8 @@ const calcLayout = (tree, node = rootNode) => {
     node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
   }
 
-  const nodes = tree.children.map((child, index) => {
-    if (typeof(child) === 'string') {
+  tree.children.map((child: any, index: number) => {
+    if (typeof child === 'string') {
       return
     }
 
@@ -120,13 +113,13 @@ const calcLayout = (tree, node = rootNode) => {
     return childNode
   })
 
-  node.calculateLayout(node.getWidth(), node.getHeight())
+  node.calculateLayout(node.getWidth().valueOf(), node.getHeight().valueOf())
 
-  tree.children.map(child => {
-    if (typeof(child) === 'string') {
+  tree.children.map((child: any) => {
+    if (typeof child === 'string') {
       return
     }
-    const node = child.layout._node
+    const node: YogaNode = child.layout._node
     child.layout = {
       ...child.layout,
       ...node.getComputedLayout()
@@ -137,11 +130,11 @@ const calcLayout = (tree, node = rootNode) => {
   })
 }
 
-const render = tree => {
+const render = (tree: JSX.Element) => {
   // jsx to renderer-json
-  const json = testRenderer.create(tree).toJSON()
+  const json = testRenderer.create(tree).toJSON()!
   // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
-  const slides = json.children.map(slide => {
+  const slides = json.children!.map(slide => {
     calcLayout(slide)
     // console.log(JSON.stringify(slide, null, 2))
     const reactXml = ReactDOMServer.renderToString(renderer(slide))
@@ -160,4 +153,4 @@ const render = tree => {
   }
 }
 
-module.exports = render
+export default render

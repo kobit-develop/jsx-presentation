@@ -1,12 +1,12 @@
-const fs = require('fs')
-const JSZip = require('jszip')
-const execSync = require('child_process').execSync
+import fs from 'fs'
+import JSZip from 'jszip'
+import { execSync } from 'child_process'
 
-const render = require('./render')
+import render from './render'
 
 const zip = new JSZip()
 
-const generate = (tree) => {
+const generate = (tree, config) => {
   const genAppXml = (
     slides = [],
     companyName = 'My Corp'
@@ -149,7 +149,8 @@ const generate = (tree) => {
     <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
     <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties" Target="docProps/custom.xml"/>
   </Relationships>
-  `)
+  `
+  )
 
   const VERSION = Number(new Date())
 
@@ -168,7 +169,8 @@ const generate = (tree) => {
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
       <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
-    </Relationships>`)
+    </Relationships>`
+    )
   })
 
   zip.file(
@@ -187,9 +189,12 @@ const generate = (tree) => {
     <Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>
     <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>
     <Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>
-    ${slides.map((slide, index) => {
-      return `<Override PartName="/ppt/slides/slide${index + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`
-    }).join("\n")}
+    ${slides
+      .map((slide, index) => {
+        return `<Override PartName="/ppt/slides/slide${index +
+          1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`
+      })
+      .join('\n')}
     <Default Extension="gif" ContentType="image/gif"/>
     <Default Extension="jpg" ContentType="image/jpeg"/>
     <Default Extension="jpeg" ContentType="image/jpeg"/>
@@ -205,14 +210,22 @@ const generate = (tree) => {
   <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
     <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>
     <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>
-    ${slides.map((slide, index) => {
-      return `<Relationship Id="rId${3 + index}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide${index + 1}.xml"/>`
-    }).join("\n")}
-    <Relationship Id="rId${slides.length + 3}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>
-    <Relationship Id="rId${slides.length + 4}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>
-    <Relationship Id="rId${slides.length + 5}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>
+    ${slides
+      .map((slide, index) => {
+        return `<Relationship Id="rId${3 +
+          index}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide${index +
+          1}.xml"/>`
+      })
+      .join('\n')}
+    <Relationship Id="rId${slides.length +
+      3}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>
+    <Relationship Id="rId${slides.length +
+      4}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>
+    <Relationship Id="rId${slides.length +
+      5}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>
   </Relationships>
-  `)
+  `
+  )
 
   zip.file(
     'ppt/presentation.xml',
@@ -222,9 +235,11 @@ const generate = (tree) => {
         <p:sldMasterId id="2147483648" r:id="rId1"/>
       </p:sldMasterIdLst>
       <p:sldIdLst>
-        ${slides.map((slide, index) => {
-          return `<p:sldId id="${256 + index}" r:id="rId${3 + index}"/>`
-        }).join("\n")}
+        ${slides
+          .map((slide, index) => {
+            return `<p:sldId id="${256 + index}" r:id="rId${3 + index}"/>`
+          })
+          .join('\n')}
       </p:sldIdLst>
       <p:sldSz cx="9144000" cy="6858000" type="screen4x3"/>
       <p:notesSz cx="6858000" cy="9144000"/>
@@ -328,6 +343,9 @@ const generate = (tree) => {
 
   zip.file('docProps/app.xml', genAppXml(slides))
 
+  if (config.dryRun) {
+    return
+  }
   zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
     fs.writeFile(`results/result-${VERSION}.pptx`, content, function() {
       execSync(`open results/result-${VERSION}.pptx`)

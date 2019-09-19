@@ -169,4 +169,4 @@ const render = node => {
   ])
 }
 
-module.exports = render
+export default render
