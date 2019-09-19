@@ -6,7 +6,7 @@ import render from './render'
 
 const zip = new JSZip()
 
-const generate = tree => {
+const generate = (tree, config) => {
   const genAppXml = (
     slides = [],
     companyName = 'My Corp'
@@ -343,6 +343,9 @@ const generate = tree => {
 
   zip.file('docProps/app.xml', genAppXml(slides))
 
+  if (config.dryRun) {
+    return
+  }
   zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
     fs.writeFile(`results/result-${VERSION}.pptx`, content, function() {
       execSync(`open results/result-${VERSION}.pptx`)
