@@ -61,6 +61,7 @@ const generate = (tree, config) => {
   const theme1 = fs.readFileSync('./xml/theme1.xml')
   const slideLayout1 = fs.readFileSync('./xml/slideLayout1.xml')
   const slideMaster1 = fs.readFileSync('./xml/slideMaster1.xml')
+  const chart1 = fs.readFileSync('./xml/chart1.xml')
 
   zip.folder('_rels')
   zip.folder('docProps')
@@ -68,6 +69,7 @@ const generate = (tree, config) => {
   zip.folder('ppt/slideLayouts').folder('_rels')
   zip.folder('ppt/slideMasters').folder('_rels')
   zip.folder('ppt/slides').folder('_rels')
+  zip.folder('ppt/charts')
   zip.folder('ppt/theme')
 
   zip.file('docProps/core.xml', genCoreXml())
@@ -154,7 +156,12 @@ const generate = (tree, config) => {
 
   const VERSION = Number(new Date())
 
-  const { slides } = render(tree)
+  const { slides, slidesRelationships, charts } = render(tree)
+
+  charts.forEach((slide, index) => {
+    const chartNum = index + 1
+    zip.file(`ppt/charts/chart${chartNum}.xml`, chart1)
+  })
 
   slides.forEach((slide, index) => {
     const slideNum = index + 1
@@ -167,9 +174,14 @@ const generate = (tree, config) => {
     zip.file(
       `ppt/slides/_rels/slide${slideNum}.xml.rels`,
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-      <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
-    </Relationships>`
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
+  ${
+    slideNum === 2
+      ? `<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml" />`
+      : ''
+  }
+</Relationships>`
     )
   })
 
@@ -200,6 +212,7 @@ const generate = (tree, config) => {
     <Default Extension="jpeg" ContentType="image/jpeg"/>
     <Default Extension="png" ContentType="image/png"/>
     <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+    <Override PartName="/ppt/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>
   </Types>
   `
   )

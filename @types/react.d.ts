@@ -6,5 +6,6 @@ declare namespace JSX {
     tr: any
     td: any
     text: any
+    chart: any
   }
 }

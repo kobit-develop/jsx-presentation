@@ -1,12 +1,7 @@
 import React from 'react'
 import generate from './generate'
 
-const data = [
-  ['Date', 'PV'],
-  ['7/24', '123123'],
-  ['7/25', '98329'],
-  ['7/25', '98329'],
-]
+const data = [['Date', 'PV'], ['7/24', '123123'], ['7/25', '98329'], ['7/25', '98329']]
 
 interface PageHeaderProps {
   title: string
@@ -14,10 +9,16 @@ interface PageHeaderProps {
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({ title, description }) => {
-  return <>
-    <text color="333333" fontSize={16} bold height={320000}>{title}</text>
-    <text color="666666" fontSize={12} height={714500}>{description}</text>
-  </>
+  return (
+    <>
+      <text color="333333" fontSize={16} bold height={320000}>
+        {title}
+      </text>
+      <text color="666666" fontSize={12} height={714500}>
+        {description}
+      </text>
+    </>
+  )
 }
 
 const tree = (
@@ -54,5 +55,5 @@ const tree = (
 )
 
 generate(tree, {
-  dryRun: true
+  dryRun: false
 })

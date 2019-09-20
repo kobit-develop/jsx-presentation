@@ -6,6 +6,7 @@ import yoga, { YogaNode } from 'yoga-layout'
 
 import Table from './components/Table'
 import Text from './components/Text'
+import Chart from './components/Chart'
 
 const h = React.createElement
 
@@ -51,6 +52,8 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
       return Table(node)
     case 'text':
       return Text(node)
+    case 'chart':
+      return Chart(node)
     default:
       console.log('unknown node: ' + node.type)
       return null
@@ -148,7 +151,9 @@ const render = (tree: JSX.Element) => {
   })
   // console.log(result)
   return {
-    slides
+    slides,
+    slidesRelationships: [],
+    charts: [null]
     // config
   }
 }

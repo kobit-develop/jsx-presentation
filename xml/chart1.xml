@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <c:date1904 val="1"/>
+  <c:lang val="en-US"/>
+  <c:chart>
+    <c:title>
+      <c:tx>
+        <c:rich>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l" fontAlgn="base" marL="0" marR="0" indent="0" lvl="0">
+              <a:defRPr/>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" dirty="0" b="false" i="true" strike="noStrike" sz="1800" u="none">
+                <a:solidFill>
+                  <a:srgbClr val="000000">
+                    <a:alpha val="100.00%"/>
+                  </a:srgbClr>
+                </a:solidFill>
+                <a:latin typeface="Calibri"/>
+              </a:rPr>
+              <a:t>PHPPresentation Daily Downloads</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" dirty="0"/>
+          </a:p>
+        </c:rich>
+      </c:tx>
+      <c:layout>
+        <c:manualLayout>
+          <c:xMode val="edge"/>
+          <c:yMode val="edge"/>
+          <c:x val="0.01"/>
+          <c:y val="0.01"/>
+        </c:manualLayout>
+      </c:layout>
+      <c:overlay val="0"/>
+    </c:title>
+    <c:autoTitleDeleted val="0"/>
+    <c:view3D>
+      <c:rotX val="30"/>
+      <c:hPercent val="100"/>
+      <c:rotY val="0"/>
+      <c:depthPercent val="100"/>
+      <c:rAngAx val="1"/>
+      <c:perspective val="30"/>
+    </c:view3D>
+    <c:plotArea>
+      <c:layout>
+        <c:manualLayout>
+          <c:xMode val="edge"/>
+          <c:yMode val="edge"/>
+        </c:manualLayout>
+      </c:layout>
+      <c:lineChart>
+        <c:grouping val="standard"/>
+        <c:ser>
+          <c:idx val="0"/>
+          <c:order val="0"/>
+          <c:tx>
+            <c:v>Downloads</c:v>
+          </c:tx>
+          <c:spPr>
+            <a:noFill/>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:dLbls>
+            <c:txPr>
+              <a:bodyPr/>
+              <a:lstStyle/>
+              <a:p>
+                <a:pPr>
+                  <a:defRPr b="false" i="false" strike="noStrike" sz="900" u="none">
+                    <a:solidFill>
+                      <a:srgbClr val="000000">
+                        <a:alpha val="100.00%"/>
+                      </a:srgbClr>
+                    </a:solidFill>
+                    <a:latin typeface="Calibri"/>
+                  </a:defRPr>
+                </a:pPr>
+                <a:endParaRPr lang="en-US" dirty="0"/>
+              </a:p>
+            </c:txPr>
+            <c:showVal val="1"/>
+            <c:showCatName val="0"/>
+            <c:showSerName val="1"/>
+            <c:showPercent val="0"/>
+            <c:showLeaderLines val="1"/>
+          </c:dLbls>
+          <c:cat>
+            <c:strLit>
+              <c:ptCount val="7"/>
+              <c:pt idx="0">
+                <c:v>Monday</c:v>
+              </c:pt>
+              <c:pt idx="1">
+                <c:v>Tuesday</c:v>
+              </c:pt>
+              <c:pt idx="2">
+                <c:v>Wednesday</c:v>
+              </c:pt>
+              <c:pt idx="3">
+                <c:v>Thursday</c:v>
+              </c:pt>
+              <c:pt idx="4">
+                <c:v>Friday</c:v>
+              </c:pt>
+              <c:pt idx="5">
+                <c:v>Saturday</c:v>
+              </c:pt>
+              <c:pt idx="6">
+                <c:v>Sunday</c:v>
+              </c:pt>
+            </c:strLit>
+          </c:cat>
+          <c:val>
+            <c:numLit>
+              <c:ptCount val="7"/>
+              <c:pt idx="0">
+                <c:v>12</c:v>
+              </c:pt>
+              <c:pt idx="1">
+                <c:v>15</c:v>
+              </c:pt>
+              <c:pt idx="2">
+                <c:v>13</c:v>
+              </c:pt>
+              <c:pt idx="3">
+                <c:v>17</c:v>
+              </c:pt>
+              <c:pt idx="4">
+                <c:v>14</c:v>
+              </c:pt>
+              <c:pt idx="5">
+                <c:v>9</c:v>
+              </c:pt>
+              <c:pt idx="6">
+                <c:v>7</c:v>
+              </c:pt>
+            </c:numLit>
+          </c:val>
+        </c:ser>
+        <c:marker val="1"/>
+        <c:smooth val="0"/>
+        <c:axId val="52743552"/>
+        <c:axId val="52749440"/>
+      </c:lineChart>
+      <c:catAx>
+        <c:axId val="52743552"/>
+        <c:scaling>
+          <c:orientation val="minMax"/>
+        </c:scaling>
+        <c:delete val="0"/>
+        <c:axPos val="b"/>
+        <c:title>
+          <c:tx>
+            <c:rich>
+              <a:bodyPr/>
+              <a:lstStyle/>
+              <a:p>
+                <a:pPr>
+                  <a:defRPr b="false" i="false" strike="noStrike" sz="1000" u="none">
+                    <a:solidFill>
+                      <a:srgbClr val="000000">
+                        <a:alpha val="100.00%"/>
+                      </a:srgbClr>
+                    </a:solidFill>
+                    <a:latin typeface="Calibri"/>
+                  </a:defRPr>
+                </a:pPr>
+                <a:r>
+                  <a:rPr lang="en-US" dirty="0"/>
+                  <a:t>Axis Title</a:t>
+                </a:r>
+                <a:endParaRPr lang="en-US" dirty="0"/>
+              </a:p>
+            </c:rich>
+          </c:tx>
+        </c:title>
+        <c:numFmt formatCode="" sourceLinked="1"/>
+        <c:majorTickMark val="none"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:spPr>
+          <a:ln w="0">
+            <a:noFill/>
+          </a:ln>
+        </c:spPr>
+        <c:crossAx val="52749440"/>
+        <c:crosses val="autoZero"/>
+        <c:lblAlgn val="ctr"/>
+        <c:lblOffset val="100"/>
+      </c:catAx>
+      <c:valAx>
+        <c:axId val="52749440"/>
+        <c:scaling>
+          <c:orientation val="minMax"/>
+        </c:scaling>
+        <c:delete val="0"/>
+        <c:axPos val="l"/>
+        <c:title>
+          <c:tx>
+            <c:rich>
+              <a:bodyPr/>
+              <a:lstStyle/>
+              <a:p>
+                <a:pPr>
+                  <a:defRPr b="false" i="false" strike="noStrike" sz="1000" u="none">
+                    <a:solidFill>
+                      <a:srgbClr val="000000">
+                        <a:alpha val="100.00%"/>
+                      </a:srgbClr>
+                    </a:solidFill>
+                    <a:latin typeface="Calibri"/>
+                  </a:defRPr>
+                </a:pPr>
+                <a:r>
+                  <a:rPr lang="en-US" dirty="0"/>
+                  <a:t>Axis Title</a:t>
+                </a:r>
+                <a:endParaRPr lang="en-US" dirty="0"/>
+              </a:p>
+            </c:rich>
+          </c:tx>
+        </c:title>
+        <c:numFmt formatCode="" sourceLinked="1"/>
+        <c:majorTickMark val="none"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:spPr>
+          <a:ln w="0">
+            <a:noFill/>
+          </a:ln>
+        </c:spPr>
+        <c:crossAx val="52743552"/>
+        <c:crosses val="autoZero"/>
+        <c:crossBetween val="between"/>
+      </c:valAx>
+    </c:plotArea>
+    <c:legend>
+      <c:legendPos val="r"/>
+      <c:layout>
+        <c:manualLayout>
+          <c:xMode val="edge"/>
+          <c:yMode val="edge"/>
+        </c:manualLayout>
+      </c:layout>
+      <c:overlay val="0"/>
+      <c:spPr>
+        <a:noFill/>
+        <a:ln w="12700" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:srgbClr val="000000">
+              <a:alpha val="100.00%"/>
+            </a:srgbClr>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+          <a:round/>
+          <a:headEnd type="none" w="med" len="med"/>
+          <a:tailEnd type="none" w="med" len="med"/>
+        </a:ln>
+      </c:spPr>
+      <c:txPr>
+        <a:bodyPr/>
+        <a:lstStyle/>
+        <a:p>
+          <a:pPr algn="l" fontAlgn="base" marL="0" marR="0" indent="0" lvl="0">
+            <a:defRPr b="false" i="true" strike="noStrike" sz="1000" u="none">
+              <a:solidFill>
+                <a:srgbClr val="000000">
+                  <a:alpha val="100.00%"/>
+                </a:srgbClr>
+              </a:solidFill>
+              <a:latin typeface="Calibri"/>
+            </a:defRPr>
+          </a:pPr>
+          <a:endParaRPr lang="en-US" dirty="0"/>
+        </a:p>
+      </c:txPr>
+    </c:legend>
+    <c:plotVisOnly val="1"/>
+  </c:chart>
+  <c:spPr>
+    <a:solidFill>
+      <a:srgbClr val="E06B20">
+        <a:alpha val="100.00%"/>
+      </a:srgbClr>
+    </a:solidFill>
+    <a:ln w="12700" cap="flat" cmpd="sng" algn="ctr">
+      <a:solidFill>
+        <a:srgbClr val="000000">
+          <a:alpha val="100.00%"/>
+        </a:srgbClr>
+      </a:solidFill>
+      <a:prstDash val="solid"/>
+      <a:round/>
+      <a:headEnd type="none" w="med" len="med"/>
+      <a:tailEnd type="none" w="med" len="med"/>
+    </a:ln>
+    <a:effectLst>
+      <a:outerShdw blurRad="57150" dist="95250" dir="2700000" algn="br" rotWithShape="0">
+        <a:srgbClr val="000000">
+          <a:alpha val="50%"/>
+        </a:srgbClr>
+      </a:outerShdw>
+    </a:effectLst>
+  </c:spPr>
+</c:chartSpace>
