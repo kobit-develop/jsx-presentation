@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import testRenderer, { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
@@ -6,9 +8,32 @@ import yoga, { YogaNode } from 'yoga-layout'
 
 import Table from './components/Table'
 import Text from './components/Text'
-import Chart from './components/Chart'
+import Chart, { renderXml } from './components/Chart'
+
+const chart1 = fs.readFileSync('./xml/chart1.xml')
 
 const h = React.createElement
+
+interface Store {
+  charts: {
+    id: number
+    content: string
+  }[]
+  slides: {
+    relationships: Relationship[]
+  }[]
+}
+
+interface Relationship {
+  rId: number
+  id: number
+  type: 'chart' | 'media' | 'slideLayout'
+}
+
+const store: Store = {
+  charts: [],
+  slides: []
+}
 
 // renderer-json to xml
 const renderer: any = (node: ReactTestRendererJSON | string) => {
@@ -53,7 +78,21 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
     case 'text':
       return Text(node)
     case 'chart':
-      return Chart(node)
+      const newChart = {
+        id: store.charts.length + 1,
+        content: jsxToXml(renderXml())
+      }
+      store.charts.push(newChart)
+
+      const currentSlide = store.slides[store.slides.length - 1]
+      const relationship: Relationship = {
+        type: 'chart',
+        rId: currentSlide.relationships.length + 1,
+        id: newChart.id
+      }
+      currentSlide.relationships.push(relationship)
+
+      return Chart(node, relationship)
     default:
       console.log('unknown node: ' + node.type)
       return null
@@ -116,44 +155,69 @@ const calcLayout = (tree: ReactTestRendererNode, node = rootNode) => {
     return childNode
   })
 
-  node.calculateLayout(node.getWidth().valueOf(), node.getHeight().valueOf())
+  node.calculateLayout(node.getWidth().value, node.getHeight().value)
 
   tree.children.map((child: any) => {
     if (typeof child === 'string') {
       return
     }
     const node: YogaNode = child.layout._node
+    console.log(
+      child.type,
+      child.props,
+      node.getHeight().value,
+      node.getFlexGrow(),
+      node.getComputedLayout()
+    )
     child.layout = {
       ...child.layout,
       ...node.getComputedLayout()
     }
+    console.log(child.layout)
     node.setWidth(child.layout.width)
-    node.setHeight(child.layout.height)
+    // node.setHeight(child.layout.height)
     calcLayout(child, node)
   })
+}
+
+const jsxToXml = (element: JSX.Element) => {
+  const reactXml = ReactDOMServer.renderToString(element)
+  const xmlStructure = convert.xml2js(reactXml)
+  delete xmlStructure.elements[0].attributes['data-reactroot']
+  return convert.js2xml(xmlStructure)
 }
 
 const render = (tree: JSX.Element) => {
   // jsx to renderer-json
   const json = testRenderer.create(tree).toJSON()!
+
   // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
   const slides = json.children!.map(slide => {
     calcLayout(slide)
     // console.log(JSON.stringify(slide, null, 2))
-    const reactXml = ReactDOMServer.renderToString(renderer(slide))
-    // console.log(JSON.stringify(reactXml, null , 2))
-    // Remove closing tag
-    const xmlStructure = convert.xml2js(reactXml)
-    delete xmlStructure.elements[0].attributes['data-reactroot']
-    const result = convert.js2xml(xmlStructure)
+    const relationships: Relationship[] = [
+      {
+        rId: 1,
+        type: 'slideLayout',
+        id: 1
+      }
+    ]
+    store.slides.push({
+      relationships
+    })
+    const result = jsxToXml(renderer(slide, relationships))
     // console.log(result)
-    return result
+    return {
+      content: result,
+      relationships: store.slides[store.slides.length - 1].relationships
+    }
   })
+
+  console.log(JSON.stringify(store, null, 2))
   // console.log(result)
   return {
     slides,
-    slidesRelationships: [],
-    charts: [null]
+    charts: store.charts
     // config
   }
 }

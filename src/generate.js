@@ -149,11 +149,11 @@ const generate = (tree, config) => {
 
   const VERSION = Number(new Date())
 
-  const { slides, slidesRelationships, charts } = render(tree)
+  const { slides, charts } = render(tree)
 
-  charts.forEach((slide, index) => {
+  charts.forEach((chart, index) => {
     const chartNum = index + 1
-    zip.file(`ppt/charts/chart${chartNum}.xml`, chart1)
+    zip.file(`ppt/charts/chart${chartNum}.xml`, chart.content)
   })
 
   slides.forEach((slide, index) => {
@@ -161,23 +161,24 @@ const generate = (tree, config) => {
 
     zip.file(
       `ppt/slides/slide${slideNum}.xml`,
-      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slide
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slide.content
     )
 
     zip.file(
       `ppt/slides/_rels/slide${slideNum}.xml.rels`,
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
-  ${
-    slideNum === 2
-      ? `<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml" />`
-      : ''
-  }
+${slide.relationships
+  .map(relationship => {
+    const { rId, id, type } = relationship
+    return `<Relationship Id="rId${rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/${type}" Target="../${type}s/${type}${id}.xml"/>`
+  })
+  .join('\n')}
 </Relationships>`
     )
   })
 
+  // CHECK: ファイルが増えたら確認すること
   zip.file(
     '[Content_Types].xml',
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -199,12 +200,17 @@ const generate = (tree, config) => {
           1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`
       })
       .join('\n')}
+    ${charts
+      .map((chart, index) => {
+        return `<Override PartName="/ppt/charts/chart${index +
+          1}.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>`
+      })
+      .join('\n')}
     <Default Extension="gif" ContentType="image/gif"/>
     <Default Extension="jpg" ContentType="image/jpeg"/>
     <Default Extension="jpeg" ContentType="image/jpeg"/>
     <Default Extension="png" ContentType="image/png"/>
     <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-    <Override PartName="/ppt/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>
   </Types>
   `
   )

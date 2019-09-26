@@ -49,7 +49,7 @@ const tree = (
         title="ページごとにタイトルを変えたいことってあるよね"
         description="説明文も書ける"
       />
-      <chart />
+      <chart flexGrow={1} />
     </slide>
   </presentation>
 )
