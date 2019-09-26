@@ -55,5 +55,5 @@ const tree = (
 )
 
 generate(tree, {
-  dryRun: true
+  dryRun: false
 })

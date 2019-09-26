@@ -168,12 +168,12 @@ const generate = (tree, config) => {
       `ppt/slides/_rels/slide${slideNum}.xml.rels`,
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
-  ${
-    slideNum === 2
-      ? `<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml" />`
-      : ''
-  }
+${slide.relationships
+  .map(relationship => {
+    const { rId, id, type } = relationship
+    return `<Relationship Id="rId${rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/${type}" Target="../${type}s/${type}${id}.xml"/>`
+  })
+  .join('\n')}
 </Relationships>`
     )
   })

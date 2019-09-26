@@ -206,7 +206,8 @@ const render = (tree: JSX.Element) => {
     const result = convert.js2xml(xmlStructure)
     // console.log(result)
     return {
-      content: result
+      content: result,
+      relationships: store.slides[store.slides.length - 1].relationships
     }
   })
 
@@ -214,7 +215,7 @@ const render = (tree: JSX.Element) => {
   // console.log(result)
   return {
     slides,
-    charts: [null]
+    charts: store.charts
     // config
   }
 }
