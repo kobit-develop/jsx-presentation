@@ -199,7 +199,7 @@ const graph = () =>
     ])
   ])
 
-const renderXml = () => {
+export const renderXml = () => {
   return h(
     'c:chartSpace',
     {
@@ -212,7 +212,7 @@ const renderXml = () => {
       h('c:lang', { val: 'en-US' }),
       graph(),
       h('c:spPr', {}, [
-        h('a:solidFill', {}, h('a:srgbClr', { val: 'E06B20' }, h('a:alpha', { val: '100.00%' }))),
+        h('a:solidFill', {}, h('a:srgbClr', { val: 'ffffff' }, h('a:alpha', { val: '100.00%' }))),
         h(
           'a:ln',
           {
@@ -261,8 +261,9 @@ const renderXml = () => {
   )
 }
 
-const render = node => {
+const render = (node, relationship) => {
   const { width, height, left, top } = node.layout
+  const { rId } = relationship
 
   return h('p:graphicFrame', {}, [
     h('p:nvGraphicFramePr', {}, [
@@ -286,76 +287,7 @@ const render = node => {
         h('c:chart', {
           'xmlns:c': 'http://schemas.openxmlformats.org/drawingml/2006/chart',
           'xmlns:r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
-          'r:id': 'rId2'
-        })
-      )
-    )
-  ])
-
-  return h('p:graphicFrame', {}, [
-    h('p:nvGraphicFramePr', {}, [
-      h(
-        'p:cNvPr',
-        {
-          id: '4',
-          name: 'グラフ 3'
-        },
-        h(
-          'a:extLst',
-          {},
-          h(
-            'a:ext',
-            {
-              uri: '{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}'
-            },
-            h('a16:creationId', {
-              'xmlns:a16': 'http://schemas.microsoft.com/office/drawing/2014/main',
-              id: '{3116756D-1E67-DA49-AB95-B04A287DAF03}'
-            })
-          )
-        )
-      ),
-      h('p:cNvGraphicFramePr', {}),
-      h(
-        'p:nvPr',
-        {},
-        h(
-          'p:extLst',
-          {},
-          h(
-            'p:ext',
-            {
-              uri: '{D42A27DB-BD31-4B8C-83A1-F6EECF244321}'
-            },
-            h('p14:modId', {
-              'xmlns:p14': 'http://schemas.microsoft.com/office/powerpoint/2010/main',
-              val: '3940592362'
-            })
-          )
-        )
-      )
-    ]),
-    h('p:xfrm', {}, [
-      h('a:off', {
-        x: '2032000',
-        y: '719666'
-      }),
-      h('a:ext', {
-        cx: '8128000',
-        cy: '5418667'
-      })
-    ]),
-    h(
-      'a:graphic',
-      {},
-      h(
-        'a:graphicData',
-        {
-          uri: 'http://schemas.openxmlformats.org/drawingml/2006/chart'
-        },
-        h('c:chart', {
-          'xmlns:c': 'http://schemas.openxmlformats.org/drawingml/2006/chart',
-          'r:id': 'rId2'
+          'r:id': `rId${rId}`
         })
       )
     )

@@ -8,7 +8,7 @@ import yoga, { YogaNode } from 'yoga-layout'
 
 import Table from './components/Table'
 import Text from './components/Text'
-import Chart from './components/Chart'
+import Chart, { renderXml } from './components/Chart'
 
 const chart1 = fs.readFileSync('./xml/chart1.xml')
 
@@ -78,21 +78,21 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
     case 'text':
       return Text(node)
     case 'chart':
-      const chartXml = chart1.toString()
       const newChart = {
         id: store.charts.length + 1,
-        content: ''
+        content: jsxToXml(renderXml())
       }
       store.charts.push(newChart)
 
       const currentSlide = store.slides[store.slides.length - 1]
-      currentSlide.relationships.push({
+      const relationship: Relationship = {
         type: 'chart',
         rId: currentSlide.relationships.length + 1,
         id: newChart.id
-      })
+      }
+      currentSlide.relationships.push(relationship)
 
-      return Chart(node)
+      return Chart(node, relationship)
     default:
       console.log('unknown node: ' + node.type)
       return null
@@ -180,6 +180,13 @@ const calcLayout = (tree: ReactTestRendererNode, node = rootNode) => {
   })
 }
 
+const jsxToXml = (element: JSX.Element) => {
+  const reactXml = ReactDOMServer.renderToString(element)
+  const xmlStructure = convert.xml2js(reactXml)
+  delete xmlStructure.elements[0].attributes['data-reactroot']
+  return convert.js2xml(xmlStructure)
+}
+
 const render = (tree: JSX.Element) => {
   // jsx to renderer-json
   const json = testRenderer.create(tree).toJSON()!
@@ -198,12 +205,7 @@ const render = (tree: JSX.Element) => {
     store.slides.push({
       relationships
     })
-    const reactXml = ReactDOMServer.renderToString(renderer(slide, relationships))
-    // console.log(JSON.stringify(reactXml, null , 2))
-    // Remove closing tag
-    const xmlStructure = convert.xml2js(reactXml)
-    delete xmlStructure.elements[0].attributes['data-reactroot']
-    const result = convert.js2xml(xmlStructure)
+    const result = jsxToXml(renderer(slide, relationships))
     // console.log(result)
     return {
       content: result,

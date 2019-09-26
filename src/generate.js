@@ -151,9 +151,9 @@ const generate = (tree, config) => {
 
   const { slides, charts } = render(tree)
 
-  charts.forEach((slide, index) => {
+  charts.forEach((chart, index) => {
     const chartNum = index + 1
-    zip.file(`ppt/charts/chart${chartNum}.xml`, chart1)
+    zip.file(`ppt/charts/chart${chartNum}.xml`, chart.content)
   })
 
   slides.forEach((slide, index) => {
@@ -178,6 +178,7 @@ ${slide.relationships
     )
   })
 
+  // CHECK: ファイルが増えたら確認すること
   zip.file(
     '[Content_Types].xml',
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -199,12 +200,17 @@ ${slide.relationships
           1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`
       })
       .join('\n')}
+    ${charts
+      .map((chart, index) => {
+        return `<Override PartName="/ppt/charts/chart${index +
+          1}.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>`
+      })
+      .join('\n')}
     <Default Extension="gif" ContentType="image/gif"/>
     <Default Extension="jpg" ContentType="image/jpeg"/>
     <Default Extension="jpeg" ContentType="image/jpeg"/>
     <Default Extension="png" ContentType="image/png"/>
     <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-    <Override PartName="/ppt/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>
   </Types>
   `
   )
