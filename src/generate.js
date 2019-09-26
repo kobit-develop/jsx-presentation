@@ -149,7 +149,7 @@ const generate = (tree, config) => {
 
   const VERSION = Number(new Date())
 
-  const { slides, slidesRelationships, charts } = render(tree)
+  const { slides, charts } = render(tree)
 
   charts.forEach((slide, index) => {
     const chartNum = index + 1
@@ -161,7 +161,7 @@ const generate = (tree, config) => {
 
     zip.file(
       `ppt/slides/slide${slideNum}.xml`,
-      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slide
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + slide.content
     )
 
     zip.file(
