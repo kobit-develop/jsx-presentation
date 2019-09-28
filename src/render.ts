@@ -24,7 +24,7 @@ interface Store {
   }[]
 }
 
-interface Relationship {
+export interface Relationship {
   rId: number
   id: number
   type: 'chart' | 'media' | 'slideLayout'

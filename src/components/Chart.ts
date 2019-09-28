@@ -1,8 +1,34 @@
+import { ReactTestRendererJSON } from 'react-test-renderer'
+import { Relationship } from '../render'
+
 const React = require('react')
 const h = React.createElement
 
-const graph = () =>
-  h('c:chart', {}, [
+interface Data {
+  labels: string[]
+  datasets: {
+    label: string
+    data: number[]
+  }[]
+}
+
+const data: Data = {
+  labels: ['Mon', 'Tue'],
+  datasets: [
+    {
+      label: 'PC',
+      data: [1, 2]
+    },
+    {
+      label: 'SP',
+      data: [23, 21]
+    }
+  ]
+}
+
+const graph = () => {
+  const { labels, datasets } = data
+  return h('c:chart', {}, [
     h('c:autoTitleDeleted', { val: 1 }),
     h('c:view3D', {}, [
       h('c:rotX', { val: '30' }),
@@ -18,61 +44,50 @@ const graph = () =>
         {},
         h('c:manualLayout', {}, [h('c:xMode', { val: 'edge' }), h('c:yMode', { val: 'edge' })])
       ),
-      h('c:areaChart', {}, [
+      // c:areaChart
+      h('c:lineChart', {}, [
         h('c:grouping', { val: 'standard' }),
-        h('c:ser', {}, [
-          h('c:idx', { val: '0' }),
-          h('c:order', { val: '0' }),
-          h('c:tx', {}, h('c:v', {}, 'Downloads')),
-          h('c:dLbls', {}, [
-            h('c:showVal', { val: '1' }),
-            h('c:showCatName', { val: '0' }),
-            h('c:showSerName', { val: '1' }),
-            h('c:showPercent', { val: '0' })
-          ]),
-          h(
-            'c:cat',
-            {},
-            h('c:strLit', {}, [
-              h('c:ptCount', { val: '7' }),
-              h('c:pt', { idx: '0' }, h('c:v', {}, 'Monday')),
-              h('c:pt', { idx: '1' }, h('c:v', {}, 'Tuesday')),
-              h('c:pt', { idx: '2' }, h('c:v', {}, 'Wednesday')),
-              h('c:pt', { idx: '3' }, h('c:v', {}, 'Thursday')),
-              h('c:pt', { idx: '4' }, h('c:v', {}, 'Friday')),
-              h('c:pt', { idx: '5' }, h('c:v', {}, 'Saturday')),
-              h('c:pt', { idx: '6' }, h('c:v', {}, 'Sunday'))
-            ])
-          ),
-          h(
-            'c:val',
-            {},
-            h('c:numLit', {}, [
-              h('c:ptCount', { val: '7' }),
-              h('c:pt', { idx: '0' }, h('c:v', {}, '12')),
-              h('c:pt', { idx: '1' }, h('c:v', {}, '15')),
-              h('c:pt', { idx: '2' }, h('c:v', {}, '13')),
-              h('c:pt', { idx: '3' }, h('c:v', {}, '17')),
-              h('c:pt', { idx: '4' }, h('c:v', {}, '14')),
-              h('c:pt', { idx: '5' }, h('c:v', {}, '9')),
-              h('c:pt', { idx: '6' }, h('c:v', {}, '7'))
-            ])
-          )
-        ]),
+        // series
+        ...datasets.map((dataset, index) => {
+          return h('c:ser', {}, [
+            h('c:idx', { val: index }),
+            h('c:order', { val: index }),
+            h('c:tx', {}, h('c:v', {}, 'PV')),
+            // data labels
+            h('c:dLbls', {}, [
+              h('c:showVal', { val: '0' }),
+              h('c:showCatName', { val: '0' }),
+              h('c:showSerName', { val: '0' }),
+              h('c:showPercent', { val: '0' })
+            ]),
+            h(
+              'c:cat',
+              {},
+              h('c:strLit', {}, [
+                h('c:ptCount', { val: labels.length }),
+                ...labels.map((label, labelIndex) => {
+                  return h('c:pt', { idx: labelIndex }, h('c:v', {}, label))
+                })
+              ])
+            ),
+            h(
+              'c:val',
+              {},
+              h('c:numLit', {}, [
+                h('c:ptCount', { val: dataset.data.length }),
+                ...dataset.data.map((value, valueIndex) => {
+                  return h('c:pt', { idx: valueIndex }, h('c:v', {}, value))
+                })
+              ])
+            )
+          ])
+        }),
         h('c:axId', { val: '52743552' }),
         h('c:axId', { val: '52749440' })
       ]),
       h('c:catAx', {}, [
-        h('c:axId', {
-          val: '52743552'
-        }),
-        h(
-          'c:scaling',
-          {},
-          h('c:orientation', {
-            val: 'minMax'
-          })
-        ),
+        h('c:axId', { val: '52743552' }),
+        h('c:scaling', {}, h('c:orientation', { val: 'minMax' })),
         h('c:delete', { val: '0' }),
         h('c:axPos', { val: 'b' }),
         h(
@@ -88,6 +103,7 @@ const graph = () =>
                 h(
                   'a:pPr',
                   {},
+                  // Default Text Run Properties
                   h(
                     'a:defRPr',
                     {
@@ -114,10 +130,7 @@ const graph = () =>
                   }),
                   h('a:t', {}, 'Axis X')
                 ]),
-                h('a:endParaRPr', {
-                  lang: 'en-US',
-                  dirty: '0'
-                })
+                h('a:endParaRPr', { lang: 'en-US', dirty: '0' })
               ])
             ])
           )
@@ -134,13 +147,7 @@ const graph = () =>
       ]),
       h('c:valAx', {}, [
         h('c:axId', { val: '52749440' }),
-        h(
-          'c:scaling',
-          {},
-          h('c:orientation', {
-            val: 'minMax'
-          })
-        ),
+        h('c:scaling', {}, h('c:orientation', { val: 'minMax' })),
         h('c:delete', { val: '0' }),
         h('c:axPos', { val: 'l' }),
         h(
@@ -181,16 +188,27 @@ const graph = () =>
             ])
           )
         ),
+        h(
+          'c:majorGridlines',
+          {},
+          h(
+            'c:spPr',
+            {},
+            h(
+              'a:ln',
+              { w: '0' },
+              h(
+                'a:solidFill',
+                {},
+                h('a:srgbClr', { val: '878787' }, h('a:alpha', { val: '100000' }))
+              )
+            )
+          )
+        ),
         h('c:numFmt', { formatCode: '', sourceLinked: '1' }),
-        h('c:majorTickMark', {
-          val: 'none'
-        }),
-        h('c:minorTickMark', {
-          val: 'none'
-        }),
-        h('c:tickLblPos', {
-          val: 'nextTo'
-        }),
+        h('c:majorTickMark', { val: 'none' }),
+        h('c:minorTickMark', { val: 'none' }),
+        h('c:tickLblPos', { val: 'nextTo' }),
         h('c:spPr', {}, h('a:ln', { w: '0' }, h('a:noFill', {}))),
         h('c:crossAx', { val: '52743552' }),
         h('c:crosses', { val: 'autoZero' }),
@@ -198,6 +216,7 @@ const graph = () =>
       ])
     ])
   ])
+}
 
 export const renderXml = () => {
   return h(
@@ -211,57 +230,63 @@ export const renderXml = () => {
       h('c:date1904', { val: '1' }),
       h('c:lang', { val: 'en-US' }),
       graph(),
+      // Shape Properties
       h('c:spPr', {}, [
-        h('a:solidFill', {}, h('a:srgbClr', { val: 'ffffff' }, h('a:alpha', { val: '100.00%' }))),
-        h(
-          'a:ln',
-          {
-            w: '12700',
-            cap: 'flat',
-            cmpd: 'sng',
-            algn: 'ctr'
-          },
-          [
-            h(
-              'a:solidFill',
-              {},
-              h('a:srgbClr', { val: '000000' }, h('a:alpha', { val: '100.00%' }))
-            ),
-            h('a:prstDash', { val: 'solid' }),
-            h('a:round', {}),
-            h('a:headEnd', {
-              type: 'none',
-              w: 'med',
-              len: 'med'
-            }),
-            h('a:tailEnd', {
-              type: 'none',
-              w: 'med',
-              len: 'med'
-            })
-          ]
-        ),
-        h(
-          'a:effectLst',
-          {},
-          h(
-            'a:outerShdw',
-            {
-              blurRad: '57150',
-              dist: '95250',
-              dir: '2700000',
-              algn: 'br',
-              rotWithShape: '0'
-            },
-            h('a:srgbClr', { val: '000000' }, h('a:alpha', { val: '50%' }))
-          )
-        )
+        h('a:noFill')
+        // h('a:solidFill', {}, h('a:srgbClr', { val: 'ffffff' }, h('a:alpha', { val: '100.00%' }))),
+        // h(
+        //   'a:ln',
+        //   {
+        //     w: '12700',
+        //     cap: 'flat',
+        //     cmpd: 'sng',
+        //     algn: 'ctr'
+        //   },
+        //   [
+        //     h(
+        //       'a:solidFill',
+        //       {},
+        //       h('a:srgbClr', { val: '000000' }, h('a:alpha', { val: '100.00%' }))
+        //     ),
+        //     h('a:prstDash', { val: 'solid' }),
+        //     h('a:round', {}),
+        //     h('a:headEnd', {
+        //       type: 'none',
+        //       w: 'med',
+        //       len: 'med'
+        //     }),
+        //     h('a:tailEnd', {
+        //       type: 'none',
+        //       w: 'med',
+        //       len: 'med'
+        //     })
+        //   ]
+        // ),
+        // h(
+        //   'a:effectLst',
+        //   {},
+        //   h(
+        //     'a:outerShdw',
+        //     {
+        //       blurRad: '57150',
+        //       dist: '95250',
+        //       dir: '2700000',
+        //       algn: 'br',
+        //       rotWithShape: '0'
+        //     },
+        //     h('a:srgbClr', { val: '000000' }, h('a:alpha', { val: '50%' }))
+        //   )
+        // )
       ])
     ]
   )
 }
 
-const render = (node, relationship) => {
+interface LayoutedTestRendererJSON extends ReactTestRendererJSON {
+  layout?: any
+}
+
+const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
   const { width, height, left, top } = node.layout
   const { rId } = relationship
 
