@@ -26,7 +26,7 @@ const data: Data = {
   ]
 }
 
-const graph = () => {
+const graph = (data: Data) => {
   const { labels, datasets } = data
   return h('c:chart', {}, [
     h('c:autoTitleDeleted', { val: 1 }),
@@ -218,7 +218,7 @@ const graph = () => {
   ])
 }
 
-export const renderXml = () => {
+export const renderXml = (data: Data) => {
   return h(
     'c:chartSpace',
     {
@@ -229,7 +229,7 @@ export const renderXml = () => {
     [
       h('c:date1904', { val: '1' }),
       h('c:lang', { val: 'en-US' }),
-      graph(),
+      graph(data),
       // Shape Properties
       h('c:spPr', {}, [
         h('a:noFill')

@@ -78,9 +78,10 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
     case 'text':
       return Text(node)
     case 'chart':
+      const data = node.props.data
       const newChart = {
         id: store.charts.length + 1,
-        content: jsxToXml(renderXml())
+        content: jsxToXml(renderXml(data))
       }
       store.charts.push(newChart)
 
@@ -90,6 +91,7 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
         rId: currentSlide.relationships.length + 1,
         id: newChart.id
       }
+
       currentSlide.relationships.push(relationship)
 
       return Chart(node, relationship)

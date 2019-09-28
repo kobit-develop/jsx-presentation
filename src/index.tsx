@@ -24,32 +24,27 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, description }) => {
 const tree = (
   <presentation>
     <slide padding={300000}>
-      <PageHeader title="タイトル" description="説明文" />
-      <table flexGrow={1}>
-        {data.map(function(row, rowIndex) {
-          return (
-            <tr flexGrow={1}>
-              {row.map(function(cell) {
-                return (
-                  <td flexGrow={1} backgroundColor={rowIndex === 0 ? 'aabbcc' : 'ffffff'}>
-                    {cell}
-                  </td>
-                )
-              })}
-            </tr>
-          )
-        })}
-      </table>
-      <text color="666666" fontSize={12} height={320000}>
-        ページの説明文がきます。
-      </text>
-    </slide>
-    <slide>
-      <PageHeader
-        title="ページごとにタイトルを変えたいことってあるよね"
-        description="説明文も書ける"
+      <PageHeader title="グラフに対応しました" description="説明文も書ける" />
+      <chart
+        data={{
+          labels: ['Mon', 'Tue', 'Wed'],
+          datasets: [
+            {
+              label: 'PC',
+              data: [30, 23, 28]
+            },
+            {
+              label: 'SP',
+              data: [23, 21, 25]
+            },
+            {
+              label: 'tablet',
+              data: [5, 6, 9]
+            }
+          ]
+        }}
+        flexGrow={1}
       />
-      <chart flexGrow={1} />
     </slide>
   </presentation>
 )
