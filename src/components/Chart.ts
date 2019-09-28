@@ -1,8 +1,34 @@
+import { ReactTestRendererJSON } from 'react-test-renderer'
+import { Relationship } from '../render'
+
 const React = require('react')
 const h = React.createElement
 
-const graph = () =>
-  h('c:chart', {}, [
+interface Data {
+  labels: string[]
+  datasets: {
+    label: string
+    data: number[]
+  }[]
+}
+
+const data: Data = {
+  labels: ['Mon', 'Tue'],
+  datasets: [
+    {
+      label: 'PC',
+      data: [1, 2]
+    },
+    {
+      label: 'SP',
+      data: [23, 21]
+    }
+  ]
+}
+
+const graph = () => {
+  const { labels, datasets } = data
+  return h('c:chart', {}, [
     h('c:autoTitleDeleted', { val: 1 }),
     h('c:view3D', {}, [
       h('c:rotX', { val: '30' }),
@@ -22,46 +48,40 @@ const graph = () =>
       h('c:lineChart', {}, [
         h('c:grouping', { val: 'standard' }),
         // series
-        h('c:ser', {}, [
-          h('c:idx', { val: '0' }),
-          h('c:order', { val: '0' }),
-          h('c:tx', {}, h('c:v', {}, 'PV')),
-          // data labels
-          h('c:dLbls', {}, [
-            h('c:showVal', { val: '0' }),
-            h('c:showCatName', { val: '0' }),
-            h('c:showSerName', { val: '0' }),
-            h('c:showPercent', { val: '0' })
-          ]),
-          h(
-            'c:cat',
-            {},
-            h('c:strLit', {}, [
-              h('c:ptCount', { val: '7' }),
-              h('c:pt', { idx: '0' }, h('c:v', {}, 'Monday')),
-              h('c:pt', { idx: '1' }, h('c:v', {}, 'Tuesday')),
-              h('c:pt', { idx: '2' }, h('c:v', {}, 'Wednesday')),
-              h('c:pt', { idx: '3' }, h('c:v', {}, 'Thursday')),
-              h('c:pt', { idx: '4' }, h('c:v', {}, 'Friday')),
-              h('c:pt', { idx: '5' }, h('c:v', {}, 'Saturday')),
-              h('c:pt', { idx: '6' }, h('c:v', {}, 'Sunday'))
-            ])
-          ),
-          h(
-            'c:val',
-            {},
-            h('c:numLit', {}, [
-              h('c:ptCount', { val: '7' }),
-              h('c:pt', { idx: '0' }, h('c:v', {}, '12')),
-              h('c:pt', { idx: '1' }, h('c:v', {}, '15')),
-              h('c:pt', { idx: '2' }, h('c:v', {}, '13')),
-              h('c:pt', { idx: '3' }, h('c:v', {}, '17')),
-              h('c:pt', { idx: '4' }, h('c:v', {}, '14')),
-              h('c:pt', { idx: '5' }, h('c:v', {}, '9')),
-              h('c:pt', { idx: '6' }, h('c:v', {}, '7'))
-            ])
-          )
-        ]),
+        ...datasets.map((dataset, index) => {
+          return h('c:ser', {}, [
+            h('c:idx', { val: index }),
+            h('c:order', { val: index }),
+            h('c:tx', {}, h('c:v', {}, 'PV')),
+            // data labels
+            h('c:dLbls', {}, [
+              h('c:showVal', { val: '0' }),
+              h('c:showCatName', { val: '0' }),
+              h('c:showSerName', { val: '0' }),
+              h('c:showPercent', { val: '0' })
+            ]),
+            h(
+              'c:cat',
+              {},
+              h('c:strLit', {}, [
+                h('c:ptCount', { val: labels.length }),
+                ...labels.map((label, labelIndex) => {
+                  return h('c:pt', { idx: labelIndex }, h('c:v', {}, label))
+                })
+              ])
+            ),
+            h(
+              'c:val',
+              {},
+              h('c:numLit', {}, [
+                h('c:ptCount', { val: dataset.data.length }),
+                ...dataset.data.map((value, valueIndex) => {
+                  return h('c:pt', { idx: valueIndex }, h('c:v', {}, value))
+                })
+              ])
+            )
+          ])
+        }),
         h('c:axId', { val: '52743552' }),
         h('c:axId', { val: '52749440' })
       ]),
@@ -196,6 +216,7 @@ const graph = () =>
       ])
     ])
   ])
+}
 
 export const renderXml = () => {
   return h(
@@ -261,7 +282,11 @@ export const renderXml = () => {
   )
 }
 
-const render = (node, relationship) => {
+interface LayoutedTestRendererJSON extends ReactTestRendererJSON {
+  layout?: any
+}
+
+const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
   const { width, height, left, top } = node.layout
   const { rId } = relationship
 
