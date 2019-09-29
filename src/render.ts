@@ -8,7 +8,9 @@ import yoga, { YogaNode } from 'yoga-layout'
 
 import Table from './components/Table'
 import Text from './components/Text'
-import Chart, { renderXml } from './components/Chart'
+import Chart from './components/Chart'
+
+import { render as renderChart } from './charts'
 
 const chart1 = fs.readFileSync('./xml/chart1.xml')
 
@@ -81,7 +83,7 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
       const data = node.props.data
       const newChart = {
         id: store.charts.length + 1,
-        content: jsxToXml(renderXml(data))
+        content: jsxToXml(renderChart(data))
       }
       store.charts.push(newChart)
 

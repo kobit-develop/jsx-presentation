@@ -40,11 +40,15 @@ const tree = (
             {
               label: 'tablet',
               data: [5, 6, 9]
+            },
+            {
+              label: 'aafeofkoef',
+              data: [1, 2, 3]
             }
           ]
         }}
         flexGrow={1}
-      />
+      ></chart>
     </slide>
   </presentation>
 )
