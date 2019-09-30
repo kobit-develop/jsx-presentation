@@ -1,11 +1,10 @@
 import * as React from 'react'
-import { ReactTestRendererJSON } from 'react-test-renderer'
+import { LayoutedTestRendererJSON } from '../render'
 const h = React.createElement
 
-/** @type {(node: ReactTestRendererJSON) => React.ReactNode} */
-const render = node => {
+const render = (node: LayoutedTestRendererJSON) => {
   const { fontSize, color, bold } = node.props
-  const { width, height, left, top } = node.layout
+  const { width, height, left, top } = node.layout!
 
   return h('p:sp', {}, [
     h('p:nvSpPr', {}, [

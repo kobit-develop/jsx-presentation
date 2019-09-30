@@ -14,6 +14,15 @@ import { render as renderChart } from './charts'
 
 const chart1 = fs.readFileSync('./xml/chart1.xml')
 
+export interface LayoutedTestRendererJSON extends ReactTestRendererJSON {
+  layout?: {
+    width: number
+    height: number
+    left: number
+    top: number
+  }
+}
+
 const h = React.createElement
 
 interface Store {
@@ -84,11 +93,11 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
 
       const children = node.children
       let childMap: any = {}
-      ;(children || []).forEach(child => {
-        if (typeof child === 'string') return
-        // chart(data), legend, title
-        childMap[child.type] = child
-      })
+        ; (children || []).forEach(child => {
+          if (typeof child === 'string') return
+          // chart(data), legend, title
+          childMap[child.type] = child
+        })
 
       const newChart = {
         id: store.charts.length + 1,

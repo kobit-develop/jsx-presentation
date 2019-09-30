@@ -1,15 +1,10 @@
-import { ReactTestRendererJSON } from 'react-test-renderer'
-import { Relationship } from '../render'
+import { Relationship, LayoutedTestRendererJSON } from '../render'
 
 const React = require('react')
 const h = React.createElement
 
-interface LayoutedTestRendererJSON extends ReactTestRendererJSON {
-  layout?: any
-}
-
 const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
-  const { width, height, left, top } = node.layout
+  const { width, height, left, top } = node.layout!
   const { rId } = relationship
 
   return h('p:graphicFrame', {}, [
