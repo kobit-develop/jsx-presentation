@@ -1,7 +1,7 @@
 const React = require('react')
 const h = React.createElement
 
-interface Data {
+export interface ChartData {
   labels: string[]
   datasets: {
     label: string
@@ -9,7 +9,7 @@ interface Data {
   }[]
 }
 
-const chart = (data: Data) => {
+const chart = (data: ChartData) => {
   const { labels, datasets } = data
   return h('c:chart', {}, [
     h('c:autoTitleDeleted', { val: 1 }),
@@ -201,7 +201,7 @@ const chart = (data: Data) => {
   ])
 }
 
-export const render = (data: Data) => {
+export const render = (data: ChartData) => {
   return h(
     'c:chartSpace',
     {
