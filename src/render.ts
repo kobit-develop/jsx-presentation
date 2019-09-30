@@ -81,6 +81,15 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
       return Text(node)
     case 'chart':
       const data = node.props.data
+
+      const children = node.children
+      let childMap: any = {}
+      ;(children || []).forEach(child => {
+        if (typeof child === 'string') return
+        // chart(data), legend, title
+        childMap[child.type] = child
+      })
+
       const newChart = {
         id: store.charts.length + 1,
         content: jsxToXml(renderChart(data))
@@ -102,10 +111,6 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
       return null
   }
 }
-
-const rootNode = yoga.Node.create()
-rootNode.setWidth(9144000)
-rootNode.setHeight(6858000)
 
 const setLayoutProps = (
   node: YogaNode,
@@ -134,9 +139,15 @@ const setLayoutProps = (
   // node.setFlexGrow(1)
 }
 
-const calcLayout = (tree: ReactTestRendererNode, node = rootNode) => {
+const calcLayout = (tree: ReactTestRendererNode, node?: YogaNode) => {
   if (typeof tree === 'string' || !tree.children) {
     return
+  }
+
+  if (!node) {
+    node = yoga.Node.create()
+    node.setWidth(9144000)
+    node.setHeight(6858000)
   }
 
   setLayoutProps(node, tree.props)
@@ -152,7 +163,7 @@ const calcLayout = (tree: ReactTestRendererNode, node = rootNode) => {
 
     const childNode = yoga.Node.create()
     setLayoutProps(childNode, child.props)
-    node.insertChild(childNode, index)
+    node!.insertChild(childNode, index)
     child.layout = {
       _node: childNode
     }
