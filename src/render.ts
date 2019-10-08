@@ -11,6 +11,7 @@ import Text from './components/Text'
 import Chart from './components/Chart'
 
 import { render as renderChart } from './charts'
+import Yoga from 'yoga-layout'
 
 const chart1 = fs.readFileSync('./xml/chart1.xml')
 
@@ -159,6 +160,8 @@ const calcLayout = (tree: ReactTestRendererNode, node?: YogaNode) => {
     node.setHeight(6858000)
   }
 
+  console.log(tree.type, node.getWidth(), node.getHeight())
+
   setLayoutProps(node, tree.props)
   // TODO: defaultProps的なものを用意する
   if (tree.type === 'tr') {
@@ -188,18 +191,22 @@ const calcLayout = (tree: ReactTestRendererNode, node?: YogaNode) => {
     const node: YogaNode = child.layout._node
     console.log(
       child.type,
-      child.props,
-      node.getHeight().value,
-      node.getFlexGrow(),
-      node.getComputedLayout()
+      // child.props,
+      // node.getHeight().value,
+      // node.getFlexGrow(),
+      node.getComputedLayout(),
     )
     child.layout = {
       ...child.layout,
       ...node.getComputedLayout()
     }
-    console.log(child.layout)
-    node.setWidth(child.layout.width)
-    // node.setHeight(child.layout.height)
+
+    const direction = node.getFlexDirection()
+    if (direction === Yoga.FLEX_DIRECTION_COLUMN) {
+      node.setWidth(child.layout.width)
+    } else if (direction === Yoga.FLEX_DIRECTION_ROW) {
+      node.setHeight(child.layout.height)
+    }
     calcLayout(child, node)
   })
 }
@@ -237,7 +244,7 @@ const render = (tree: JSX.Element) => {
     }
   })
 
-  console.log(JSON.stringify(store, null, 2))
+  // console.log(JSON.stringify(store, null, 2))
   // console.log(result)
   return {
     slides,
