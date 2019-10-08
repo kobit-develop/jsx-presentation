@@ -149,15 +149,9 @@ const setLayoutProps = (
   // node.setFlexGrow(1)
 }
 
-const calcLayout = (tree: ReactTestRendererNode, node?: YogaNode) => {
+const calcLayout = (tree: ReactTestRendererNode, node: YogaNode) => {
   if (typeof tree === 'string' || !tree.children) {
     return
-  }
-
-  if (!node) {
-    node = yoga.Node.create()
-    node.setWidth(9144000)
-    node.setHeight(6858000)
   }
 
   console.log(tree.type, node.getWidth(), node.getHeight())
@@ -218,8 +212,85 @@ const jsxToXml = (element: JSX.Element) => {
   return convert.js2xml(xmlStructure)
 }
 
+const genYogaNode = (tree: ReactTestRendererJSON) => {
+  const node = yoga.Node.create()
+
+  const { flexGrow, height, width, padding } = tree.props
+  if (padding) {
+    node.setPadding(yoga.EDGE_TOP, padding)
+    node.setPadding(yoga.EDGE_RIGHT, padding)
+    node.setPadding(yoga.EDGE_BOTTOM, padding)
+    node.setPadding(yoga.EDGE_LEFT, padding)
+  }
+  if (height) {
+    node.setHeight(height)
+  }
+  if (width) {
+    node.setWidth(width)
+  }
+  if (flexGrow) {
+    node.setFlexGrow(flexGrow)
+  }
+  return { node, stop: tree.type === 'text' }
+}
+
+export const walkTree = (tree: ReactTestRendererJSON) => {
+  const { node, stop } = genYogaNode(tree)
+  const { children } = tree
+  if (children && children.length > 0) {
+    for (let index = 0; index < children.length; index++) {
+      const child = children[index]
+      if (typeof child !== 'string') {
+        if (!stop) {
+          const childNode = walkTree(child)
+          node.insertChild(childNode, index)
+        }
+      }
+    }
+  }
+  return node
+}
+
+export const composeJSONTree = (tree: ReactTestRendererJSON, node: YogaNode) => {
+  const { type, children, props } = tree
+  let composedChildren = []
+
+  if (children && type !== 'text') {
+    console.log(children)
+    for (let index = 0; index < children.length; index++) {
+      const child = children[index]
+      if (typeof child === 'string') {
+        composedChildren.push(child)
+        continue
+      }
+      const childNode = node.getChild(index)
+      composedChildren.push(
+        composeJSONTree(child, childNode)
+      )
+    }
+  }
+
+  if (type === 'text') {
+    composedChildren = children
+  }
+
+  console.log(type, node)
+
+  return {
+    ...tree, layout: {
+      ...node.getComputedLayout()
+    },
+    children: composedChildren
+  }
+
+}
+
 export const renderSlide = (tree: ReactTestRendererNode, store: Store) => {
-  calcLayout(tree)
+  const node = yoga.Node.create()
+  node.setWidth(9144000)
+  node.setHeight(6858000)
+
+  calcLayout(tree, node)
   const relationships: Relationship[] = [
     { rId: 1, type: 'slideLayout', id: 1 }
   ]
