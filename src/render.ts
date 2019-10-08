@@ -218,34 +218,28 @@ const jsxToXml = (element: JSX.Element) => {
   return convert.js2xml(xmlStructure)
 }
 
+export const renderSlide = (tree: ReactTestRendererNode, store: Store) => {
+  calcLayout(tree)
+  const relationships: Relationship[] = [
+    { rId: 1, type: 'slideLayout', id: 1 }
+  ]
+  store.slides.push({ relationships })
+  const result = jsxToXml(renderer(tree, relationships))
+  return {
+    content: result,
+    relationships: store.slides[store.slides.length - 1].relationships
+  }
+}
+
 const render = (tree: JSX.Element) => {
   // jsx to renderer-json
   const json = testRenderer.create(tree).toJSON()!
 
   // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
   const slides = json.children!.map(slide => {
-    calcLayout(slide)
-    // console.log(JSON.stringify(slide, null, 2))
-    const relationships: Relationship[] = [
-      {
-        rId: 1,
-        type: 'slideLayout',
-        id: 1
-      }
-    ]
-    store.slides.push({
-      relationships
-    })
-    const result = jsxToXml(renderer(slide, relationships))
-    // console.log(result)
-    return {
-      content: result,
-      relationships: store.slides[store.slides.length - 1].relationships
-    }
+    return renderSlide(slide, store)
   })
 
-  // console.log(JSON.stringify(store, null, 2))
-  // console.log(result)
   return {
     slides,
     charts: store.charts
