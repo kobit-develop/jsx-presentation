@@ -123,10 +123,7 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
 }
 
 const jsxToXml = (element: JSX.Element) => {
-  const reactXml = ReactDOMServer.renderToString(element)
-  const xmlStructure = convert.xml2js(reactXml)
-  delete xmlStructure.elements[0].attributes['data-reactroot']
-  return convert.js2xml(xmlStructure)
+  return ReactDOMServer.renderToStaticMarkup(element)
 }
 
 const composeYogaNode = (tree: ReactTestRendererJSON) => {
