@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { ReactTestRendererJSON } from 'react-test-renderer'
+import { LayoutedTestRendererJSON } from '../render'
 const h = React.createElement
 
-const TableText = (attrs, text) => {
+const renderTableText = (attrs: any, text: React.ReactNode[]) => {
   return h('a:txBody', {}, [
     h('a:bodyPr', {}),
     h('a:lstStyle', {}),
@@ -16,22 +16,16 @@ const TableText = (attrs, text) => {
         }),
         h('a:t', {}, text)
       ])
-      // h('a:endParaRPr', {
-      //   kumimoji: '1',
-      //   lang: 'ja-JP',
-      //   altLang: 'en-US'
-      // })
     ])
   ])
 }
 
-/** @type {(attrs: any, children: React.ReactNode[]) => React.ReactNode} */
-const TableCell = (attrs, children) => {
+const renderTableCell = (attrs: any, children: React.ReactNode[]) => {
   const cellProps = [
     attrs.backgroundColor &&
-      h('a:solidFill', {}, [
-        h('a:srgbClr', { val: attrs.backgroundColor }, [h('a:alpha', { val: '100.00%' })])
-      ])
+    h('a:solidFill', {}, [
+      h('a:srgbClr', { val: attrs.backgroundColor }, [h('a:alpha', { val: '100.00%' })])
+    ])
   ].filter(property => property)
 
   return h('a:tc', {}, [
@@ -40,8 +34,7 @@ const TableCell = (attrs, children) => {
   ])
 }
 
-/** @type {(attrs: any, children: React.ReactNode[]) => React.ReactNode} */
-const TableRow = (attrs, children) => {
+const renderTableRow = (attrs: any, children: React.ReactNode[]) => {
   return h('a:tr', { h: attrs.rowHeight }, [
     ...children,
     h(
@@ -61,19 +54,25 @@ const TableRow = (attrs, children) => {
   ])
 }
 
-/** @type {(node: ReactTestRendererJSON) => React.ReactNode} */
-const render = node => {
-  const { width, height, left, top } = node.layout
+const render = (node: LayoutedTestRendererJSON) => {
+  const { width, height, left, top } = node.layout!
 
   if (!node.children) {
     return null
   }
-  const rows = node.children // as ReactTestRendererJSON[]
+  // FIXME
+  const rows: {
+    props: any
+    layout: any
+    children: any[]
+  }[] = node.children as any
+  const headerRow = rows[0]
   node.children.forEach(row => {
     if (typeof row !== 'string' && row.type !== 'tr') {
-      console.error('')
+      throw 'invalid child type'
     }
   })
+
 
   return h('p:graphicFrame', {}, [
     h('p:nvGraphicFramePr', {}, [
@@ -135,10 +134,10 @@ const render = node => {
           h(
             'a:tblGrid',
             {},
-            rows[0].children.map((cell) => {
+            headerRow.children.map((cell) => {
               return h(
                 'a:gridCol',
-                { w: cell.layout.width },
+                { w: cell.layout!.width },
                 h(
                   // https://docs.microsoft.com/ja-jp/dotnet/api/documentformat.openxml.drawing.extensionlist?view=openxml-2.8.1
                   'a:extLst',
@@ -156,10 +155,10 @@ const render = node => {
             })
           ),
           rows.map(row => {
-            return TableRow(
+            return renderTableRow(
               { rowHeight: row.layout.height },
               row.children.map(cell => {
-                return TableCell(cell.props, [TableText({}, cell.children)])
+                return renderTableCell(cell.props, [renderTableText({}, cell.children)])
               })
             )
           })
