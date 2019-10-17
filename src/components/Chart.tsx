@@ -1,7 +1,21 @@
-import { Relationship, LayoutedTestRendererJSON } from '../render'
+import { Relationship, LayoutedTestRendererJSON, LayoutProps } from '../render'
 
 const React = require('react')
 const h = React.createElement
+
+interface ChartProps {
+  data: {
+    labels: string[],
+    datasets: {
+      label: string
+      data: number[]
+    }[]
+  }
+}
+
+export const Chart: React.FC<ChartProps & LayoutProps> = (props) => {
+  return <chart {...props} />
+}
 
 const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
   const { width, height, left, top } = node.layout!

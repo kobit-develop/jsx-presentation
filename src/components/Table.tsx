@@ -1,6 +1,24 @@
 import * as React from 'react'
-import { LayoutedTestRendererJSON } from '../render'
+import { LayoutedTestRendererJSON, LayoutProps } from '../render'
 const h = React.createElement
+
+export const Table: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+  return <table {...props}>
+    {children}
+  </table>
+}
+
+export const TableRow: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+  return <tr {...props}>
+    {children}
+  </tr>
+}
+
+export const TableCell: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+  return <td {...props}>
+    {children}
+  </td>
+}
 
 const renderTableText = (attrs: any, text: React.ReactNode[]) => {
   return h('a:txBody', {}, [

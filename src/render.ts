@@ -126,6 +126,13 @@ const jsxToXml = (element: JSX.Element) => {
   return ReactDOMServer.renderToStaticMarkup(element)
 }
 
+export interface LayoutProps {
+  padding?: number
+  width?: number
+  height?: number
+  flexGrow?: number
+}
+
 const composeYogaNode = (tree: ReactTestRendererJSON) => {
   const node = yoga.Node.create()
 
@@ -133,7 +140,7 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
     node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
   }
 
-  const { flexGrow, height, width, padding } = tree.props
+  const { flexGrow, height, width, padding } = tree.props as LayoutProps
   if (padding) {
     node.setPadding(yoga.EDGE_TOP, padding)
     node.setPadding(yoga.EDGE_RIGHT, padding)

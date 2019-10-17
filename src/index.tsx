@@ -1,5 +1,9 @@
 import React from 'react'
 import generate from './generate'
+import { Text } from './components/Text'
+import { Chart } from './components/Chart'
+import { Table, TableRow, TableCell } from './components/Table'
+import { LayoutProps } from './render'
 
 const data = [['Date', 'PV'], ['7/24', '123123'], ['7/25', '98329'], ['7/25', '98329']]
 
@@ -11,21 +15,41 @@ interface PageHeaderProps {
 const PageHeader: React.FC<PageHeaderProps> = ({ title, description }) => {
   return (
     <>
-      <text color="333333" fontSize={16} bold height={320000}>
+      <Text color="333333" fontSize={16} bold height={320000}>
         {title}
-      </text>
-      <text color="666666" fontSize={12} height={714500}>
+      </Text>
+      <Text color="666666" fontSize={12} height={714500}>
         {description}
-      </text>
+      </Text>
     </>
   )
 }
 
+const Slide: React.FC<LayoutProps> = ({ children, ...props }) => <slide {...props}>{children}</slide>
+
 const tree = (
   <presentation>
-    <slide padding={300000}>
+    <Slide padding={600000}>
       <PageHeader title="グラフに対応しました" description="説明文も書ける" />
-      <chart
+      <Table flexGrow={1}>
+        {data.map((row, rowIndex) => {
+          return (
+            <TableRow flexGrow={1}>
+              {row.map(function (cell) {
+                return (
+                  <TableCell flexGrow={1} backgroundColor={rowIndex === 0 ? 'aabbcc' : 'ffffff'}>
+                    {cell}
+                  </TableCell>
+                )
+              })}
+            </TableRow>
+          )
+        })}
+      </Table>
+    </Slide>
+    <Slide padding={300000}>
+      <PageHeader title="グラフに対応しました" description="説明文も書ける" />
+      <Chart
         data={{
           labels: ['Mon', 'Tue', 'Wed'],
           datasets: [
@@ -48,8 +72,8 @@ const tree = (
           ]
         }}
         flexGrow={1}
-      ></chart>
-    </slide>
+      />
+    </Slide>
   </presentation>
 )
 
