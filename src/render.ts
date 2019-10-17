@@ -122,14 +122,21 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
   }
 }
 
-const setLayoutProps = (
-  node: YogaNode,
-  props: {
-    [key: string]: any
+const jsxToXml = (element: JSX.Element) => {
+  const reactXml = ReactDOMServer.renderToString(element)
+  const xmlStructure = convert.xml2js(reactXml)
+  delete xmlStructure.elements[0].attributes['data-reactroot']
+  return convert.js2xml(xmlStructure)
+}
+
+const composeYogaNode = (tree: ReactTestRendererJSON) => {
+  const node = yoga.Node.create()
+
+  if (tree.type === 'tr') {
+    node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
   }
-) => {
-  const { width, height, flexGrow, padding } = props
-  // console.log(height, flexGrow, padding)
+
+  const { flexGrow, height, width, padding } = tree.props
   if (padding) {
     node.setPadding(yoga.EDGE_TOP, padding)
     node.setPadding(yoga.EDGE_RIGHT, padding)
@@ -142,89 +149,71 @@ const setLayoutProps = (
   if (width) {
     node.setWidth(width)
   }
-  node.setFlexDirection(yoga.FLEX_DIRECTION_COLUMN)
   if (flexGrow) {
     node.setFlexGrow(flexGrow)
   }
-  // node.setFlexGrow(1)
+  return { node, stop: tree.type === 'text' }
 }
 
-const calcLayout = (tree: ReactTestRendererNode, node?: YogaNode) => {
-  if (typeof tree === 'string' || !tree.children) {
-    return
+export const composeNodeTree = (tree: ReactTestRendererJSON) => {
+  const { node, stop } = composeYogaNode(tree)
+  const { children } = tree
+  if (children && children.length > 0) {
+    for (let index = 0; index < children.length; index++) {
+      const child = children[index]
+      if (typeof child !== 'string') {
+        if (!stop) {
+          const childNode = composeNodeTree(child)
+          node.insertChild(childNode, index)
+        }
+      }
+    }
+  }
+  return node
+}
+
+export const composeLayoutedTree = (tree: ReactTestRendererJSON, node: YogaNode) => {
+  const { type, children } = tree
+  let composedChildren: ReactTestRendererNode[] = []
+
+  if (type === 'text') {
+    composedChildren = children || []
+  } else if (children) {
+    console.log(children)
+    for (let index = 0; index < children.length; index++) {
+      const child = children[index]
+      if (typeof child === 'string') {
+        composedChildren.push(child)
+        continue
+      }
+      const childNode = node.getChild(index)
+      composedChildren.push(
+        composeLayoutedTree(child, childNode)
+      )
+    }
   }
 
-  if (!node) {
-    node = yoga.Node.create()
-    node.setWidth(9144000)
-    node.setHeight(6858000)
-  }
-
-  console.log(tree.type, node.getWidth(), node.getHeight())
-
-  setLayoutProps(node, tree.props)
-  // TODO: defaultProps的なものを用意する
-  if (tree.type === 'tr') {
-    node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
-  }
-
-  tree.children.map((child: any, index: number) => {
-    if (typeof child === 'string') {
-      return
-    }
-
-    const childNode = yoga.Node.create()
-    setLayoutProps(childNode, child.props)
-    node!.insertChild(childNode, index)
-    child.layout = {
-      _node: childNode
-    }
-    return childNode
-  })
-
-  node.calculateLayout(node.getWidth().value, node.getHeight().value)
-
-  tree.children.map((child: any) => {
-    if (typeof child === 'string') {
-      return
-    }
-    const node: YogaNode = child.layout._node
-    console.log(
-      child.type,
-      // child.props,
-      // node.getHeight().value,
-      // node.getFlexGrow(),
-      node.getComputedLayout(),
-    )
-    child.layout = {
-      ...child.layout,
+  return {
+    ...tree, layout: {
       ...node.getComputedLayout()
-    }
+    },
+    children: composedChildren
+  }
 
-    const direction = node.getFlexDirection()
-    if (direction === Yoga.FLEX_DIRECTION_COLUMN) {
-      node.setWidth(child.layout.width)
-    } else if (direction === Yoga.FLEX_DIRECTION_ROW) {
-      node.setHeight(child.layout.height)
-    }
-    calcLayout(child, node)
-  })
 }
 
-const jsxToXml = (element: JSX.Element) => {
-  const reactXml = ReactDOMServer.renderToString(element)
-  const xmlStructure = convert.xml2js(reactXml)
-  delete xmlStructure.elements[0].attributes['data-reactroot']
-  return convert.js2xml(xmlStructure)
-}
+export const renderSlide = (tree: ReactTestRendererJSON, store: Store) => {
+  const nodeTree = composeNodeTree(tree)
+  nodeTree.setWidth(9144000)
+  nodeTree.setHeight(6858000)
+  nodeTree.calculateLayout()
+  const layoutedTree = { ...composeLayoutedTree(tree, nodeTree) }
 
-export const renderSlide = (tree: ReactTestRendererNode, store: Store) => {
-  calcLayout(tree)
   const relationships: Relationship[] = [
     { rId: 1, type: 'slideLayout', id: 1 }
   ]
   store.slides.push({ relationships })
-  const result = jsxToXml(renderer(tree, relationships))
+  const result = jsxToXml(renderer(layoutedTree, relationships))
   return {
     content: result,
     relationships: store.slides[store.slides.length - 1].relationships
@@ -232,19 +221,20 @@ export const renderSlide = (tree: ReactTestRendererNode, store: Store) => {
 }
 
 const render = (tree: JSX.Element) => {
-  // jsx to renderer-json
   const json = testRenderer.create(tree).toJSON()!
 
-  // output: <p:sld><p>$aa<b>bbb</b>aa</pre></p:sld>
-  const slides = json.children!.map(slide => {
-    return renderSlide(slide, store)
-  })
+  const slides = json.children!
+    .filter(filterRendererJSON)
+    .map(slide => renderSlide(slide, store))
 
   return {
     slides,
     charts: store.charts
-    // config
   }
+}
+
+const filterRendererJSON = (slide: ReactTestRendererNode): slide is ReactTestRendererJSON => {
+  return typeof slide !== 'string'
 }
 
 export default render
