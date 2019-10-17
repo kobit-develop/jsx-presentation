@@ -123,10 +123,14 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
 }
 
 const jsxToXml = (element: JSX.Element) => {
-  const reactXml = ReactDOMServer.renderToString(element)
-  const xmlStructure = convert.xml2js(reactXml)
-  delete xmlStructure.elements[0].attributes['data-reactroot']
-  return convert.js2xml(xmlStructure)
+  return ReactDOMServer.renderToStaticMarkup(element)
+}
+
+export interface LayoutProps {
+  padding?: number
+  width?: number
+  height?: number
+  flexGrow?: number
 }
 
 const composeYogaNode = (tree: ReactTestRendererJSON) => {
@@ -136,7 +140,7 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
     node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
   }
 
-  const { flexGrow, height, width, padding } = tree.props
+  const { flexGrow, height, width, padding } = tree.props as LayoutProps
   if (padding) {
     node.setPadding(yoga.EDGE_TOP, padding)
     node.setPadding(yoga.EDGE_RIGHT, padding)

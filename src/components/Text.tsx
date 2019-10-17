@@ -1,9 +1,19 @@
 import * as React from 'react'
-import { LayoutedTestRendererJSON } from '../render'
+import { LayoutedTestRendererJSON, LayoutProps } from '../render'
 const h = React.createElement
 
+interface TextProps {
+  color?: string,
+  bold?: boolean,
+  fontSize?: number
+}
+
+export const Text: React.FC<TextProps & LayoutProps> = ({ children, ...props }) => {
+  return <text {...props}>{children}</text>
+}
+
 const render = (node: LayoutedTestRendererJSON) => {
-  const { fontSize, color, bold } = node.props
+  const { fontSize, color, bold } = (node.props as TextProps)
   const { width, height, left, top } = node.layout!
 
   return h('p:sp', {}, [
@@ -59,7 +69,8 @@ const render = (node: LayoutedTestRendererJSON) => {
             {
               lang: 'en-US',
               b: bold ? 1 : 0,
-              sz: fontSize * 100,
+              // TODO: default font size
+              sz: (fontSize || 12) * 100,
               spc: 0,
               u: 'none'
             },
