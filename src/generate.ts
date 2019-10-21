@@ -6,9 +6,13 @@ import render from './render'
 
 const zip = new JSZip()
 
-const generate = (tree, config) => {
+interface Config {
+  dryRun: boolean
+}
+
+const generate = (tree: JSX.Element, config: Config) => {
   const genAppXml = (
-    slides = [],
+    slides: any[] = [],
     companyName = 'My Corp'
   ) => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
@@ -169,11 +173,11 @@ const generate = (tree, config) => {
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
 ${slide.relationships
-  .map(relationship => {
-    const { rId, id, type } = relationship
-    return `<Relationship Id="rId${rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/${type}" Target="../${type}s/${type}${id}.xml"/>`
-  })
-  .join('\n')}
+        .map(relationship => {
+          const { rId, id, type } = relationship
+          return `<Relationship Id="rId${rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/${type}" Target="../${type}s/${type}${id}.xml"/>`
+        })
+        .join('\n')}
 </Relationships>`
     )
   })
@@ -229,11 +233,11 @@ ${slide.relationships
       })
       .join('\n')}
     <Relationship Id="rId${slides.length +
-      3}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>
+    3}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>
     <Relationship Id="rId${slides.length +
-      4}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>
+    4}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>
     <Relationship Id="rId${slides.length +
-      5}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>
+    5}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>
   </Relationships>
   `
   )
@@ -247,10 +251,10 @@ ${slide.relationships
       </p:sldMasterIdLst>
       <p:sldIdLst>
         ${slides
-          .map((slide, index) => {
-            return `<p:sldId id="${256 + index}" r:id="rId${3 + index}"/>`
-          })
-          .join('\n')}
+      .map((slide, index) => {
+        return `<p:sldId id="${256 + index}" r:id="rId${3 + index}"/>`
+      })
+      .join('\n')}
       </p:sldIdLst>
       <p:sldSz cx="9144000" cy="6858000" type="screen4x3"/>
       <p:notesSz cx="6858000" cy="9144000"/>
@@ -357,12 +361,12 @@ ${slide.relationships
   if (config.dryRun) {
     return
   }
-  zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
-    fs.writeFile(`results/result-${VERSION}.pptx`, content, function() {
+  zip.generateAsync({ type: 'nodebuffer' }).then(function (content: any) {
+    fs.writeFile(`results/result-${VERSION}.pptx`, content, function () {
       execSync(`open results/result-${VERSION}.pptx`)
     })
     // fs.writeFile(`results/result-${VERSION}.zip`, content, function() {})
   })
 }
 
-module.exports = generate
+export default generate
