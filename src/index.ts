@@ -1,4 +1,6 @@
 export { default as generate } from './generate'
+export { Presentation } from './components/Presentation'
+export { Slide } from './components/Slide'
 export { Text } from './components/Text'
 export { Chart } from './components/Chart'
 export { Table, TableRow, TableCell } from './components/Table'
