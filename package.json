@@ -23,9 +23,9 @@
     "@types/jest": "^24.0.18",
     "@types/jszip": "^3.1.6",
     "@types/node": "^12.7.5",
-    "@types/react": "^16.9.2",
-    "@types/react-dom": "^16.9.0",
-    "@types/react-test-renderer": "^16.9.0",
+    "@types/react": "^16.9.9",
+    "@types/react-dom": "^16.9.2",
+    "@types/react-test-renderer": "^16.9.1",
     "@types/yoga-layout": "^1.9.1",
     "babel-jest": "^24.9.0",
     "jest": "^24.9.0",
@@ -33,7 +33,7 @@
   },
   "scripts": {
     "start": "babel-node src --extensions '.ts,.tsx,.js'",
-    "build": "tsc --emitDeclarationOnly -d --outDir lib && babel src --extensions '.ts,.tsx' -d 'lib/'",
+    "build": "tsc --emitDeclarationOnly && babel src --extensions '.ts,.tsx' -d 'lib/'",
     "test": "jest"
   }
 }
