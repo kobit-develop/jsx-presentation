@@ -5,11 +5,6 @@
   "author": "mottox2 <y.mottox2@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@babel/cli": "^7.6.4",
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.6.0",
     "jszip": "^3.2.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -19,7 +14,12 @@
     "yoga-layout": "^1.9.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
     "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.6.0",
     "@types/jest": "^24.0.18",
     "@types/jszip": "^3.1.6",
     "@types/node": "^12.7.5",
