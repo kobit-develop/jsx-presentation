@@ -8,9 +8,11 @@ const zip = new JSZip()
 
 interface Config {
   dryRun: boolean
+  outDir: string
 }
 
 export const generate = (tree: JSX.Element, config: Config) => {
+  const { dryRun, outDir } = config
   const genAppXml = (
     slides: any[] = [],
     companyName = 'My Corp'
@@ -150,8 +152,6 @@ export const generate = (tree: JSX.Element, config: Config) => {
   </Relationships>
   `
   )
-
-  const VERSION = Number(new Date())
 
   const { slides, charts } = render(tree)
 
@@ -358,13 +358,19 @@ ${slide.relationships
 
   zip.file('docProps/app.xml', genAppXml(slides))
 
-  if (config.dryRun) {
+  if (dryRun) {
     return
   }
+
   zip.generateAsync({ type: 'nodebuffer' }).then(function (content: any) {
-    fs.writeFile(`results/result-${VERSION}.pptx`, content, function () {
-      execSync(`open results/result-${VERSION}.pptx`)
+    const timestamp = Number(new Date())
+    const filePath = `${outDir || 'results'}/${timestamp}.pptx`
+    fs.writeFile(filePath, content, function () {
+      try {
+        execSync(`open ${filePath}`)
+      } catch (error) {
+        console.error(error)
+      }
     })
-    // fs.writeFile(`results/result-${VERSION}.zip`, content, function() {})
   })
 }
