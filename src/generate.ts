@@ -10,7 +10,7 @@ interface Config {
   dryRun: boolean
 }
 
-const generate = (tree: JSX.Element, config: Config) => {
+export const generate = (tree: JSX.Element, config: Config) => {
   const genAppXml = (
     slides: any[] = [],
     companyName = 'My Corp'
@@ -368,5 +368,3 @@ ${slide.relationships
     // fs.writeFile(`results/result-${VERSION}.zip`, content, function() {})
   })
 }
-
-export default generate

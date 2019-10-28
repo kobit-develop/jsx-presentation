@@ -1,4 +1,4 @@
-export { default as generate } from './generate'
+export { generate } from './generate'
 export { Presentation } from './components/Presentation'
 export { Slide } from './components/Slide'
 export { Text } from './components/Text'
