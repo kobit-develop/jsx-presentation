@@ -1,7 +1,8 @@
 {
   "name": "jsx-presentation",
-  "version": "0.0.1",
-  "main": "index.js",
+  "version": "0.0.2",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "author": "mottox2 <y.mottox2@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -34,6 +35,9 @@
   "scripts": {
     "start": "babel-node src --extensions '.ts,.tsx,.js'",
     "build": "tsc --emitDeclarationOnly && babel src --extensions '.ts,.tsx' -d 'lib/'",
-    "test": "jest"
+    "test": "jest",
+    "prerelease": "cp .gitignore .npmignore && echo src/ >> .npmignore",
+    "release": "yarn publish",
+    "postrelease": "rm .npmignore"
   }
 }
