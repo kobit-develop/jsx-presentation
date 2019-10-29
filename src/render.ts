@@ -13,8 +13,6 @@ import Chart from './components/Chart'
 import { render as renderChart } from './charts'
 import Yoga from 'yoga-layout'
 
-const chart1 = fs.readFileSync('./xml/chart1.xml')
-
 export interface LayoutedTestRendererJSON extends ReactTestRendererJSON {
   layout?: {
     width: number

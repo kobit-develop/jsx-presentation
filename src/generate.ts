@@ -1,5 +1,6 @@
 import fs from 'fs'
 import JSZip from 'jszip'
+import path from 'path'
 import { execSync } from 'child_process'
 
 import render from './render'
@@ -64,10 +65,9 @@ export const generate = (tree: JSX.Element, config: Config) => {
   </cp:coreProperties>
   `
 
-  const theme1 = fs.readFileSync('./xml/theme1.xml')
-  const slideLayout1 = fs.readFileSync('./xml/slideLayout1.xml')
-  const slideMaster1 = fs.readFileSync('./xml/slideMaster1.xml')
-  const chart1 = fs.readFileSync('./xml/chart1.xml')
+  const theme1 = fs.readFileSync(path.join(__dirname, '../xml/theme1.xml'))
+  const slideLayout1 = fs.readFileSync(path.join(__dirname, '../xml/slideLayout1.xml'))
+  const slideMaster1 = fs.readFileSync(path.join(__dirname, '../xml/slideMaster1.xml'))
 
   zip.folder('_rels')
   zip.folder('docProps')
@@ -362,9 +362,14 @@ ${slide.relationships
     return
   }
 
+  const outDirName = outDir || 'results'
+  if (!fs.existsSync(outDirName)) {
+    fs.mkdirSync(outDirName);
+  }
+
   zip.generateAsync({ type: 'nodebuffer' }).then(function (content: any) {
     const timestamp = Number(new Date())
-    const filePath = `${outDir || 'results'}/${timestamp}.pptx`
+    const filePath = `${outDirName}/${timestamp}.pptx`
     fs.writeFile(filePath, content, function () {
       try {
         execSync(`open ${filePath}`)
