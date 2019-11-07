@@ -9,11 +9,12 @@ const zip = new JSZip()
 
 interface Config {
   dryRun: boolean
-  outDir: string
+  outDir: string,
+  fileName: string
 }
 
-export const generate = (tree: JSX.Element, config: Config) => {
-  const { dryRun, outDir } = config
+export const generate = (tree: JSX.Element, config: Partial<Config>) => {
+  const { dryRun, outDir, fileName } = config
   const genAppXml = (
     slides: any[] = [],
     companyName = 'My Corp'
@@ -369,7 +370,7 @@ ${slide.relationships
 
   zip.generateAsync({ type: 'nodebuffer' }).then(function (content: any) {
     const timestamp = Number(new Date())
-    const filePath = `${outDirName}/${timestamp}.pptx`
+    const filePath = `${outDirName}/${fileName || timestamp}.pptx`
     fs.writeFile(filePath, content, function () {
       try {
         execSync(`open ${filePath}`)
