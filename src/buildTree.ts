@@ -130,12 +130,33 @@ export const composeLayoutedTree = (tree: ReactTestRendererJSON, node: YogaNode)
 
 }
 
+const convertRelativeToAbsolute = (tree: any, position: {
+  top: number,
+  left: number
+} = {
+    top: 0,
+    left: 0
+  }) => {
+  console.log(tree)
+  tree.layout.left += position.left
+  tree.layout.top += position.top
+  const { left, top } = tree.layout
+  if (!tree.layout || !tree.children) { return }
+  tree.children.forEach(child => {
+    if (typeof (child) === 'string') { return }
+    convertRelativeToAbsolute(child, {
+      top, left
+    })
+  })
+}
+
 const buildTree = (tree: ReactTestRendererJSON, store: Store) => {
   const nodeTree = composeNodeTree(tree)
   nodeTree.setWidth(9144000)
   nodeTree.setHeight(6858000)
   nodeTree.calculateLayout()
   const layoutJSON = composeLayoutedTree(tree, nodeTree)
+  convertRelativeToAbsolute(layoutJSON)
   // logNode(nodeTree)
   return layoutJSON
 }
