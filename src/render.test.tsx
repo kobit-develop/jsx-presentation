@@ -1,5 +1,6 @@
 import React from 'react'
-import render, { renderSlide, composeNodeTree, composeLayoutedTree } from './render'
+import render, { renderSlide } from './render'
+import { composeLayoutedTree, composeNodeTree } from './buildTree'
 import testRenderer from 'react-test-renderer'
 import Yoga from 'yoga-layout'
 

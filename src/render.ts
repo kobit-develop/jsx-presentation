@@ -3,15 +3,14 @@ import fs from 'fs'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import testRenderer, { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
-import convert from 'xml-js'
-import yoga, { YogaNode } from 'yoga-layout'
+import { YogaNode } from 'yoga-layout'
 
 import Table from './components/Table'
 import Text from './components/Text'
 import Chart from './components/Chart'
 
 import { render as renderChart } from './charts'
-import Yoga from 'yoga-layout'
+import buildTree from './buildTree'
 
 export interface LayoutedTestRendererJSON extends ReactTestRendererJSON {
   layout?: {
@@ -129,93 +128,30 @@ export interface LayoutProps {
   width?: number
   height?: number
   flexGrow?: number
+  flexDirection?: 'row' | 'column'
 }
 
-const composeYogaNode = (tree: ReactTestRendererJSON) => {
-  const node = yoga.Node.create()
+const logNode = (node: YogaNode, depth = 0) => {
+  const { left, top, width, height } = node.getComputedLayout()
+  const flexGrow = node.getFlexGrow()
+  console.log('  '.repeat(depth), {
+    left, top, width, height, flexGrow
+  })
 
-  if (tree.type === 'tr') {
-    node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
+  for (let i = 0; i < node.getChildCount(); i++) {
+    const child = node.getChild(i)
+    logNode(child, depth + 1)
   }
-
-  const { flexGrow, height, width, padding } = tree.props as LayoutProps
-  if (padding) {
-    node.setPadding(yoga.EDGE_TOP, padding)
-    node.setPadding(yoga.EDGE_RIGHT, padding)
-    node.setPadding(yoga.EDGE_BOTTOM, padding)
-    node.setPadding(yoga.EDGE_LEFT, padding)
-  }
-  if (height) {
-    node.setHeight(height)
-  }
-  if (width) {
-    node.setWidth(width)
-  }
-  if (flexGrow) {
-    node.setFlexGrow(flexGrow)
-  }
-  return { node, stop: tree.type === 'text' }
 }
 
-export const composeNodeTree = (tree: ReactTestRendererJSON) => {
-  const { node, stop } = composeYogaNode(tree)
-  const { children } = tree
-  if (children && children.length > 0) {
-    for (let index = 0; index < children.length; index++) {
-      const child = children[index]
-      if (typeof child !== 'string') {
-        if (!stop) {
-          const childNode = composeNodeTree(child)
-          node.insertChild(childNode, index)
-        }
-      }
-    }
-  }
-  return node
-}
-
-export const composeLayoutedTree = (tree: ReactTestRendererJSON, node: YogaNode) => {
-  const { type, children } = tree
-  let composedChildren: ReactTestRendererNode[] = []
-
-  if (type === 'text') {
-    composedChildren = children || []
-  } else if (children) {
-    console.log(children)
-    for (let index = 0; index < children.length; index++) {
-      const child = children[index]
-      if (typeof child === 'string') {
-        composedChildren.push(child)
-        continue
-      }
-      const childNode = node.getChild(index)
-      composedChildren.push(
-        composeLayoutedTree(child, childNode)
-      )
-    }
-  }
-
-  return {
-    ...tree, layout: {
-      ...node.getComputedLayout()
-    },
-    children: composedChildren
-  }
-
-}
-
-export const renderSlide = (tree: ReactTestRendererJSON, store: Store) => {
-  const nodeTree = composeNodeTree(tree)
-  nodeTree.setWidth(9144000)
-  nodeTree.setHeight(6858000)
-  nodeTree.calculateLayout()
-  const layoutedTree = { ...composeLayoutedTree(tree, nodeTree) }
-
+export const renderSlide = (rendererJSON: ReactTestRendererJSON, store: Store) => {
+  const tree = buildTree(rendererJSON, store)
   const relationships: Relationship[] = [
     { rId: 1, type: 'slideLayout', id: 1 }
   ]
   store.slides.push({ relationships })
-  const result = jsxToXml(renderer(layoutedTree, relationships))
+  const resultJSX = renderer(tree, relationships)
+  const result = jsxToXml(resultJSX)
   return {
     content: result,
     relationships: store.slides[store.slides.length - 1].relationships
