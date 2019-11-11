@@ -1,33 +1,6 @@
-import React from 'react'
 import { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
 import yoga, { YogaNode } from 'yoga-layout'
-
-export interface LayoutedTestRendererJSON extends ReactTestRendererJSON {
-  layout?: {
-    width: number
-    height: number
-    left: number
-    top: number
-  }
-}
-
-const h = React.createElement
-
-interface Store {
-  charts: {
-    id: number
-    content: string
-  }[]
-  slides: {
-    relationships: Relationship[]
-  }[]
-}
-
-export interface Relationship {
-  rId: number
-  id: number
-  type: 'chart' | 'media' | 'slideLayout'
-}
+import { LayoutedTestRendererJSON, Store } from './render'
 
 export interface LayoutProps {
   padding?: number
@@ -127,21 +100,19 @@ export const composeLayoutedTree = (tree: ReactTestRendererJSON, node: YogaNode)
     },
     children: composedChildren
   }
-
 }
 
-const convertRelativeToAbsolute = (tree: any, position: {
+const convertRelativeToAbsolute = (tree: LayoutedTestRendererJSON, position: {
   top: number,
   left: number
 } = {
     top: 0,
     left: 0
   }) => {
-  console.log(tree)
+  if (!tree.layout || !tree.children) { return }
   tree.layout.left += position.left
   tree.layout.top += position.top
   const { left, top } = tree.layout
-  if (!tree.layout || !tree.children) { return }
   tree.children.forEach(child => {
     if (typeof (child) === 'string') { return }
     convertRelativeToAbsolute(child, {

@@ -23,7 +23,7 @@ export interface LayoutedTestRendererJSON extends ReactTestRendererJSON {
 
 const h = React.createElement
 
-interface Store {
+export interface Store {
   charts: {
     id: number
     content: string
