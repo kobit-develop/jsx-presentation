@@ -86,6 +86,9 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
       return Table(node)
     case 'text':
       return Text(node)
+    case 'fragment':
+      if (!node.children) throw 'Framgent must have children'
+      return node.children.map(child => renderer(child))
     case 'chart':
       const data = node.props.data
 
