@@ -8,15 +8,34 @@ interface TextProps {
   fontSize?: number
 }
 
-export const Text: React.FC<TextProps & LayoutProps> = ({ children, ...props }) => {
+// TODO: gradient
+type FillType = string
+
+interface ShapeProps {
+  fill: FillType
+}
+
+export const Text: React.FC<TextProps & Partial<ShapeProps> & LayoutProps> = ({ children, ...props }) => {
   return <text {...props}>{children}</text>
 }
 
-const render = (node: LayoutedTestRendererJSON) => {
-  const { fontSize, color, bold } = (node.props as TextProps)
-  const { width, height, left, top } = node.layout!
+const renderFill = (fill?: FillType) => {
+  if (!fill) {
+    return h('a:noFill')
+  }
 
+  return h('a:solidFill', {},
+    h('a:srgbClr', { val: fill }, h('a:alpha', { val: '100%' }))
+  )
+}
+
+const render = (node: LayoutedTestRendererJSON) => {
+  console.log(node.props)
+  const { fontSize, color, bold } = (node.props as TextProps)
+  const { fill } = (node.props as Partial<ShapeProps>)
+  const { width, height, left, top } = node.layout!
   return h('p:sp', {}, [
+    // Non-Visual Properties for a Shape
     h('p:nvSpPr', {}, [
       h('p:cNvPr', {
         id: 4,
@@ -34,8 +53,9 @@ const render = (node: LayoutedTestRendererJSON) => {
         h('a:off', { x: left, y: top }),
         h('a:ext', { cx: width, cy: height })
       ]),
+      // Preset geometry
       h('a:prstGeom', { prst: 'rect' }, [h('a:avLst')]),
-      h('a:noFill')
+      renderFill(fill)
     ),
     h('p:txBody', {}, [
       h(
@@ -50,6 +70,7 @@ const render = (node: LayoutedTestRendererJSON) => {
         h('a:spAutoFit')
       ),
       h('a:lstStyle'),
+      // paragraph
       h('a:p', {}, [
         h(
           'a:pPr',
@@ -92,7 +113,6 @@ const render = (node: LayoutedTestRendererJSON) => {
       ])
     ])
   ])
-
 }
 
 export default render
