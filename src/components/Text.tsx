@@ -6,6 +6,7 @@ interface TextProps {
   color?: string,
   bold?: boolean,
   fontSize?: number
+  verticalAlign?: 'top' | 'middle' | 'bottom'
 }
 
 // TODO: gradient
@@ -30,10 +31,15 @@ const renderFill = (fill?: FillType) => {
 }
 
 const render = (node: LayoutedTestRendererJSON) => {
-  console.log(node.props)
-  const { fontSize, color, bold } = (node.props as TextProps)
+  const { fontSize, color, bold, verticalAlign } = (node.props as TextProps)
   const { fill } = (node.props as Partial<ShapeProps>)
   const { width, height, left, top } = node.layout!
+
+  const anchor = !!verticalAlign ? {
+    'top': 't',
+    'middle': 'ctr',
+    'bottom': 'b',
+  }[verticalAlign] : 't'
   return h('p:sp', {}, [
     // Non-Visual Properties for a Shape
     h('p:nvSpPr', {}, [
@@ -65,7 +71,9 @@ const render = (node: LayoutedTestRendererJSON) => {
           bIns: '45720',
           lIns: '91440',
           rIns: '91440',
-          tIns: '45720'
+          tIns: '45720',
+          anchor,
+          anchorCtr: "0"
         },
         h('a:spAutoFit')
       ),
