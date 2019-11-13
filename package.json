@@ -1,6 +1,6 @@
 {
   "name": "jsx-presentation",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "mottox2 <y.mottox2@gmail.com>",
@@ -36,7 +36,7 @@
   "scripts": {
     "start": "babel-node src --extensions '.ts,.tsx,.js'",
     "build": "tsc --emitDeclarationOnly && babel src --extensions '.ts,.tsx' -d 'lib/'",
-    "test": "jest",
+    "test": "env NODE_ENV=production jest src/",
     "release": "yarn publish",
     "release:prepare": "shipjs prepare",
     "release:trigger": "shipjs trigger"
