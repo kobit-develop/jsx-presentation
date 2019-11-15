@@ -10,6 +10,14 @@ export interface LayoutProps {
   flexDirection?: 'row' | 'column'
 }
 
+/**
+ * Convert mm to EMUs(English Metric Units)
+ * @return {number} converted value
+ */
+const mmToEmus = (mm: number): number => {
+  return Math.round(mm * 36000)
+}
+
 const composeYogaNode = (tree: ReactTestRendererJSON) => {
   const node = yoga.Node.create()
 
@@ -26,16 +34,16 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
     }[flexDirection])
   }
   if (padding) {
-    node.setPadding(yoga.EDGE_TOP, padding)
-    node.setPadding(yoga.EDGE_RIGHT, padding)
-    node.setPadding(yoga.EDGE_BOTTOM, padding)
-    node.setPadding(yoga.EDGE_LEFT, padding)
+    node.setPadding(yoga.EDGE_TOP, mmToEmus(padding))
+    node.setPadding(yoga.EDGE_RIGHT, mmToEmus(padding))
+    node.setPadding(yoga.EDGE_BOTTOM, mmToEmus(padding))
+    node.setPadding(yoga.EDGE_LEFT, mmToEmus(padding))
   }
   if (height) {
-    node.setHeight(height)
+    node.setHeight(mmToEmus(height))
   }
   if (width) {
-    node.setWidth(width)
+    node.setWidth(mmToEmus(width))
   }
   if (flexGrow) {
     node.setFlexGrow(flexGrow)
@@ -46,7 +54,6 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
 
 export const composeNodeTree = (tree: ReactTestRendererJSON, depth = 0) => {
   const { node, stop } = composeYogaNode(tree)
-  console.log('  '.repeat(depth), depth, tree.type, stop, tree.props)
   const { children } = tree
   if (children && children.length > 0) {
     for (let index = 0; index < children.length; index++) {
