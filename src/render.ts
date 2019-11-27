@@ -1,9 +1,7 @@
-import fs from 'fs'
-
 import React from 'react'
-import ReactDOMServer from 'react-dom/server'
 import testRenderer, { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
 import { YogaNode } from 'yoga-layout'
+import react2xml from 'react2xml'
 
 import Table from './components/Table'
 import Text from './components/Text'
@@ -88,7 +86,7 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
       return Text(node)
     case 'fragment':
       if (!node.children) throw 'Framgent must have children'
-      return node.children.map(child => renderer(child))
+      return h(React.Fragment, {}, node.children.map(child => renderer(child)))
     case 'chart':
       const data = node.props.data
 
@@ -102,7 +100,7 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
 
       const newChart = {
         id: store.charts.length + 1,
-        content: jsxToXml(renderChart(data))
+        content: react2xml(renderChart(data))
       }
       store.charts.push(newChart)
 
@@ -120,10 +118,6 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
       console.log('unknown node: ' + node.type)
       return null
   }
-}
-
-const jsxToXml = (element: JSX.Element) => {
-  return ReactDOMServer.renderToStaticMarkup(element)
 }
 
 export interface LayoutProps {
@@ -154,7 +148,7 @@ export const renderSlide = (rendererJSON: ReactTestRendererJSON, store: Store) =
   ]
   store.slides.push({ relationships })
   const resultJSX = renderer(tree, relationships)
-  const result = jsxToXml(resultJSX)
+  const result = react2xml(resultJSX)
   return {
     content: result,
     relationships: store.slides[store.slides.length - 1].relationships
