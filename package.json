@@ -9,9 +9,7 @@
     "jszip": "^3.2.2",
     "react": "^16.8.6",
     "react-test-renderer": "^16.8.6",
-    "react2xml": "^0.1.0",
-    "xml-formatter": "^1.1.0",
-    "xml-js": "^1.6.11",
+    "react2xml": "^0.1.2",
     "yoga-layout": "^1.9.3"
   },
   "devDependencies": {
@@ -29,15 +27,12 @@
     "@types/yoga-layout": "^1.9.1",
     "babel-jest": "^24.9.0",
     "jest": "^24.9.0",
-    "shipjs": "^0.8.1",
     "typescript": "^3.6.4"
   },
   "scripts": {
     "start": "babel-node src --extensions '.ts,.tsx,.js'",
     "build": "tsc --emitDeclarationOnly && babel src --extensions '.ts,.tsx' -d 'lib/'",
     "test": "env NODE_ENV=production jest src/",
-    "release": "yarn publish",
-    "release:prepare": "shipjs prepare",
-    "release:trigger": "shipjs trigger"
+    "release": "yarn publish"
   }
 }
