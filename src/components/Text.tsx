@@ -112,11 +112,7 @@ const render = (node: LayoutedTestRendererJSON) => {
               h('a:latin', { typeface: 'Calibri' })
             ]
           ),
-          h('a:t', {
-            dangerouslySetInnerHTML: {
-              __html: node.children
-            }
-          })
+          h('a:t', {}, node.children)
         ])
       ])
     ])
