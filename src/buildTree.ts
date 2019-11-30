@@ -4,6 +4,10 @@ import { LayoutedTestRendererJSON, Store } from './render'
 
 export interface LayoutProps {
   padding?: number
+  paddingTop?: number
+  paddingRight?: number
+  paddingBottom?: number
+  paddingLeft?: number
   width?: number
   height?: number
   flexGrow?: number
@@ -25,7 +29,7 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
     node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
   }
 
-  const { flexGrow, flexDirection, height, width, padding } = tree.props as LayoutProps
+  const { flexGrow, flexDirection, height, width, padding, paddingTop, paddingRight, paddingBottom, paddingLeft } = tree.props as LayoutProps
 
   if (flexDirection) {
     node.setFlexDirection({
@@ -39,6 +43,10 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
     node.setPadding(yoga.EDGE_BOTTOM, mmToEmus(padding))
     node.setPadding(yoga.EDGE_LEFT, mmToEmus(padding))
   }
+  if (paddingTop) node.setPadding(yoga.EDGE_TOP, mmToEmus(paddingTop))
+  if (paddingRight) node.setPadding(yoga.EDGE_TOP, mmToEmus(paddingRight))
+  if (paddingBottom) node.setPadding(yoga.EDGE_TOP, mmToEmus(paddingBottom))
+  if (paddingLeft) node.setPadding(yoga.EDGE_TOP, mmToEmus(paddingLeft))
   if (height) {
     node.setHeight(mmToEmus(height))
   }
