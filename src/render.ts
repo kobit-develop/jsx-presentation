@@ -90,14 +90,6 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
     case 'chart':
       const data = node.props.data
 
-      const children = node.children
-      let childMap: any = {}
-        ; (children || []).forEach(child => {
-          if (typeof child === 'string') return
-          // chart(data), legend, title
-          childMap[child.type] = child
-        })
-
       const newChart = {
         id: store.charts.length + 1,
         content: react2xml(renderChart(data))
