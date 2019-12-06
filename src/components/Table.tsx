@@ -21,11 +21,11 @@ export const TableCell: React.FC<any & LayoutProps> = ({ children, ...props }) =
 }
 
 const renderTableText = (attrs: any, text: React.ReactNode[]) => {
-  return h('a:txBody', {}, [
+  return h('a:txBody', {},
     h('a:bodyPr', {}),
     h('a:lstStyle', {}),
-    h('a:p', {}, [
-      h('a:r', {}, [
+    h('a:p', {},
+      h('a:r', {},
         h('a:rPr', {
           kumimoji: '1',
           lang: 'en-US',
@@ -33,17 +33,17 @@ const renderTableText = (attrs: any, text: React.ReactNode[]) => {
           dirty: '0'
         }),
         h('a:t', {}, text)
-      ])
-    ])
-  ])
+      )
+    )
+  )
 }
 
 const renderTableCell = (attrs: any, children: React.ReactNode[]) => {
   const cellProps = [
     attrs.backgroundColor &&
-    h('a:solidFill', {}, [
-      h('a:srgbClr', { val: attrs.backgroundColor }, [h('a:alpha', { val: '100.00%' })])
-    ])
+    h('a:solidFill', {},
+      h('a:srgbClr', { val: attrs.backgroundColor }, h('a:alpha', { val: '100.00%' }))
+    )
   ].filter(property => property)
 
   return h('a:tc', {}, [
@@ -92,8 +92,8 @@ const render = (node: LayoutedTestRendererJSON) => {
   })
 
 
-  return h('p:graphicFrame', {}, [
-    h('p:nvGraphicFramePr', {}, [
+  return h('p:graphicFrame', {},
+    h('p:nvGraphicFramePr', {},
       h(
         'p:cNvPr',
         { id: 5, name: '' },
@@ -129,8 +129,11 @@ const render = (node: LayoutedTestRendererJSON) => {
           )
         )
       )
-    ]),
-    h('p:xfrm', {}, [h('a:off', { x: left, y: top }), h('a:ext', { cx: width, cy: height })]),
+    ),
+    h('p:xfrm', {},
+      h('a:off', { x: left, y: top }),
+      h('a:ext', { cx: width, cy: height })
+    ),
     h(
       'a:graphic',
       {},
@@ -139,7 +142,7 @@ const render = (node: LayoutedTestRendererJSON) => {
         {
           uri: 'http://schemas.openxmlformats.org/drawingml/2006/table'
         },
-        h('a:tbl', {}, [
+        h('a:tbl', {},
           h(
             'a:tblPr',
             {
@@ -180,10 +183,10 @@ const render = (node: LayoutedTestRendererJSON) => {
               })
             )
           })
-        ])
+        )
       )
     )
-  ])
+  )
 }
 
 export default render

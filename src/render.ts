@@ -54,31 +54,29 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
           'xmlns:r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
           'xmlns:p': 'http://schemas.openxmlformats.org/presentationml/2006/main'
         },
-        [
-          h(
-            'p:cSld',
-            {},
-            h('p:spTree', {}, [
-              h('p:nvGrpSpPr', {}, [
-                h('p:cNvPr', { id: 1, name: '' }),
-                h('p:cNvGrpSpPr'),
-                h('p:nvPr')
-              ]),
-              h(
-                'p:grpSpPr',
-                {},
-                h('a:xfrm', {}, [
-                  h('a:off', { x: '0', y: '0' }),
-                  h('a:ext', { cx: '0', cy: '0' }),
-                  h('a:chOff', { x: '0', y: '0' }),
-                  h('a:chExt', { cx: '0', cy: '0' })
-                ])
-              ),
-              ...node.children!.map(child => renderer(child))
-            ])
-          ),
-          h('p:clrMapOvr', {}, [h('a:masterClrMapping')])
-        ]
+        h(
+          'p:cSld',
+          {},
+          h('p:spTree', {},
+            h('p:nvGrpSpPr', {},
+              h('p:cNvPr', { id: 1, name: '' }),
+              h('p:cNvGrpSpPr'),
+              h('p:nvPr')
+            ),
+            h(
+              'p:grpSpPr',
+              {},
+              h('a:xfrm', {},
+                h('a:off', { x: '0', y: '0' }),
+                h('a:ext', { cx: '0', cy: '0' }),
+                h('a:chOff', { x: '0', y: '0' }),
+                h('a:chExt', { cx: '0', cy: '0' })
+              )
+            ),
+            ...node.children!.map(child => renderer(child))
+          )
+        ),
+        h('p:clrMapOvr', {}, h('a:masterClrMapping'))
       )
     case 'table':
       return Table(node)
@@ -89,14 +87,6 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
       return h(React.Fragment, {}, node.children.map(child => renderer(child)))
     case 'chart':
       const data = node.props.data
-
-      const children = node.children
-      let childMap: any = {}
-        ; (children || []).forEach(child => {
-          if (typeof child === 'string') return
-          // chart(data), legend, title
-          childMap[child.type] = child
-        })
 
       const newChart = {
         id: store.charts.length + 1,

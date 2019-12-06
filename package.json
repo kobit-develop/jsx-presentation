@@ -9,7 +9,7 @@
     "jszip": "^3.2.2",
     "react": "^16.8.6",
     "react-test-renderer": "^16.8.6",
-    "react2xml": "^0.1.2",
+    "react2xml": "^0.2.0",
     "yoga-layout": "^1.9.3"
   },
   "devDependencies": {

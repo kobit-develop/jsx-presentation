@@ -30,6 +30,53 @@ const renderFill = (fill?: FillType) => {
   )
 }
 
+const renderParagraph = (node: LayoutedTestRendererJSON) => {
+  const { fontSize, color, bold } = (node.props as TextProps)
+  if (!node.children) { return }
+  const paragraph = (node.children.map((child, key) => {
+    if (typeof child === 'string') {
+      return h('a:r', { key },
+        h(
+          'a:rPr',
+          {
+            lang: 'en-US',
+            b: bold ? 1 : 0,
+            // TODO: default font size
+            sz: (fontSize || 12) * 100,
+            spc: 0,
+            u: 'none'
+          },
+          h(
+            'a:solidFill',
+            {},
+            h('a:srgbClr', { val: color }, h('a:alpha', { val: '100.00%' }))
+          ),
+          h('a:latin', { typeface: 'Calibri' })
+        ),
+        h('a:t', {}, child)
+      )
+    }
+    if (child.type === 'br') {
+      return h('a:br', { key })
+    }
+  }))
+  return h('a:p', {},
+    h(
+      'a:pPr',
+      {
+        algn: 'l',
+        fontAlgn: 'base',
+        marL: '0',
+        marR: '0',
+        indent: '0',
+        lvl: '0'
+      },
+      h('a:lnSpc', {}, h('a:spcPct', { val: '100%' }))
+    ),
+    ...paragraph,
+  )
+}
+
 const render = (node: LayoutedTestRendererJSON) => {
   const { fontSize, color, bold, verticalAlign } = (node.props as TextProps)
   const { fill } = (node.props as Partial<ShapeProps>)
@@ -40,9 +87,9 @@ const render = (node: LayoutedTestRendererJSON) => {
     'middle': 'ctr',
     'bottom': 'b',
   }[verticalAlign] : 't'
-  return h('p:sp', {}, [
+  return h('p:sp', {},
     // Non-Visual Properties for a Shape
-    h('p:nvSpPr', {}, [
+    h('p:nvSpPr', {},
       h('p:cNvPr', {
         id: 4,
         name: ''
@@ -51,19 +98,19 @@ const render = (node: LayoutedTestRendererJSON) => {
         txBox: 1
       }),
       h('p:nvPr')
-    ]),
+    ),
     h(
       'p:spPr',
       {},
-      h('a:xfrm', {}, [
+      h('a:xfrm', {},
         h('a:off', { x: left, y: top }),
         h('a:ext', { cx: width, cy: height })
-      ]),
+      ),
       // Preset geometry
-      h('a:prstGeom', { prst: 'rect' }, [h('a:avLst')]),
+      h('a:prstGeom', { prst: 'rect' }, h('a:avLst')),
       renderFill(fill)
     ),
-    h('p:txBody', {}, [
+    h('p:txBody', {},
       h(
         'a:bodyPr',
         {
@@ -78,45 +125,9 @@ const render = (node: LayoutedTestRendererJSON) => {
         h('a:spAutoFit')
       ),
       h('a:lstStyle'),
-      // paragraph
-      h('a:p', {}, [
-        h(
-          'a:pPr',
-          {
-            algn: 'l',
-            fontAlgn: 'base',
-            marL: '0',
-            marR: '0',
-            indent: '0',
-            lvl: '0'
-          },
-          h('a:lnSpc', {}, h('a:spcPct', { val: '100%' }))
-        ),
-        h('a:r', {}, [
-          h(
-            'a:rPr',
-            {
-              lang: 'en-US',
-              b: bold ? 1 : 0,
-              // TODO: default font size
-              sz: (fontSize || 12) * 100,
-              spc: 0,
-              u: 'none'
-            },
-            [
-              h(
-                'a:solidFill',
-                {},
-                h('a:srgbClr', { val: color }, h('a:alpha', { val: '100.00%' }))
-              ),
-              h('a:latin', { typeface: 'Calibri' })
-            ]
-          ),
-          h('a:t', {}, node.children)
-        ])
-      ])
-    ])
-  ])
+      renderParagraph(node)
+    )
+  )
 }
 
 export default render

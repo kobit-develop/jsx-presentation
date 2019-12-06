@@ -11,10 +11,11 @@ interface Config {
   dryRun: boolean
   outDir: string,
   fileName: string
+  open: boolean
 }
 
 export const generate = (tree: JSX.Element, config: Partial<Config>) => {
-  const { dryRun, outDir, fileName } = config
+  const { dryRun, outDir, fileName, open = false } = config
   const genAppXml = (
     slides: any[] = [],
     companyName = 'My Corp'
@@ -373,7 +374,7 @@ ${slide.relationships
     const filePath = `${outDirName}/${fileName || timestamp}.pptx`
     fs.writeFile(filePath, content, function () {
       try {
-        execSync(`open ${filePath}`)
+        if (open) execSync(`open ${filePath}`)
       } catch (error) {
         console.error(error)
       }

@@ -21,8 +21,8 @@ const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
   const { width, height, left, top } = node.layout!
   const { rId } = relationship
 
-  return h('p:graphicFrame', {}, [
-    h('p:nvGraphicFramePr', {}, [
+  return h('p:graphicFrame', {},
+    h('p:nvGraphicFramePr', {},
       h('p:cNvPr', {
         id: '2',
         name: 'Sample Chart',
@@ -30,8 +30,11 @@ const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
       }),
       h('p:cNvGraphicFramePr', {}),
       h('p:nvPr', {})
-    ]),
-    h('p:xfrm', {}, [h('a:off', { x: left, y: top }), h('a:ext', { cx: width, cy: height })]),
+    ),
+    h('p:xfrm', {},
+      h('a:off', { x: left, y: top }),
+      h('a:ext', { cx: width, cy: height })
+    ),
     h(
       'a:graphic',
       {},
@@ -47,7 +50,7 @@ const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
         })
       )
     )
-  ])
+  )
 }
 
 export default render
