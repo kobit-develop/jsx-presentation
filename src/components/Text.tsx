@@ -60,7 +60,7 @@ const renderParagraph = (node: LayoutedTestRendererJSON) => {
       return h('a:br', { key })
     }
   }))
-  return h('a:p', {}, [
+  return h('a:p', {},
     h(
       'a:pPr',
       {
@@ -74,7 +74,7 @@ const renderParagraph = (node: LayoutedTestRendererJSON) => {
       h('a:lnSpc', {}, h('a:spcPct', { val: '100%' }))
     ),
     ...paragraph,
-  ])
+  )
 }
 
 const render = (node: LayoutedTestRendererJSON) => {
@@ -87,9 +87,9 @@ const render = (node: LayoutedTestRendererJSON) => {
     'middle': 'ctr',
     'bottom': 'b',
   }[verticalAlign] : 't'
-  return h('p:sp', {}, [
+  return h('p:sp', {},
     // Non-Visual Properties for a Shape
-    h('p:nvSpPr', {}, [
+    h('p:nvSpPr', {},
       h('p:cNvPr', {
         id: 4,
         name: ''
@@ -98,19 +98,19 @@ const render = (node: LayoutedTestRendererJSON) => {
         txBox: 1
       }),
       h('p:nvPr')
-    ]),
+    ),
     h(
       'p:spPr',
       {},
-      h('a:xfrm', {}, [
+      h('a:xfrm', {},
         h('a:off', { x: left, y: top }),
         h('a:ext', { cx: width, cy: height })
-      ]),
+      ),
       // Preset geometry
-      h('a:prstGeom', { prst: 'rect' }, [h('a:avLst')]),
+      h('a:prstGeom', { prst: 'rect' }, h('a:avLst')),
       renderFill(fill)
     ),
-    h('p:txBody', {}, [
+    h('p:txBody', {},
       h(
         'a:bodyPr',
         {
@@ -126,8 +126,8 @@ const render = (node: LayoutedTestRendererJSON) => {
       ),
       h('a:lstStyle'),
       renderParagraph(node)
-    ])
-  ])
+    )
+  )
 }
 
 export default render
