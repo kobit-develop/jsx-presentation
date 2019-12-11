@@ -32,7 +32,7 @@
   "scripts": {
     "start": "babel-node src --extensions '.ts,.tsx,.js'",
     "build": "tsc --emitDeclarationOnly && babel src --extensions '.ts,.tsx' -d 'lib/'",
-    "test": "env NODE_ENV=production jest src/",
+    "test": "env NODE_ENV=production jest",
     "release": "yarn publish"
   }
 }

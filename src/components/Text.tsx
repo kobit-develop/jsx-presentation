@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { LayoutedTestRendererJSON, LayoutProps } from '../render'
+import { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
 const h = React.createElement
 
 interface TextProps {
@@ -30,11 +31,12 @@ const renderFill = (fill?: FillType) => {
   )
 }
 
-const renderParagraph = (node: LayoutedTestRendererJSON) => {
-  const { fontSize, color, bold } = (node.props as TextProps)
+export const renderParagraph = (node: LayoutedTestRendererJSON) => {
   if (!node.children) { return }
-  const paragraph = (node.children.map((child, key) => {
-    if (typeof child === 'string') {
+  const flattenNodes = flattenText(node)
+  const paragraph = (flattenNodes.map((node, key) => {
+    const { fontSize, color, bold } = (node.props as TextProps)
+    if (node.type === 'plain') {
       return h('a:r', { key },
         h(
           'a:rPr',
@@ -53,10 +55,10 @@ const renderParagraph = (node: LayoutedTestRendererJSON) => {
           ),
           h('a:latin', { typeface: 'Calibri' })
         ),
-        h('a:t', {}, child)
+        h('a:t', {}, node.text)
       )
     }
-    if (child.type === 'br') {
+    if (node.type === 'br') {
       return h('a:br', { key })
     }
   }))
@@ -75,6 +77,32 @@ const renderParagraph = (node: LayoutedTestRendererJSON) => {
     ),
     ...paragraph,
   )
+}
+
+export const flattenText = (tree: ReactTestRendererJSON) => {
+  return [].concat.apply([], walkText(tree)) as {
+    type: 'plain' | 'br'
+    props: any,
+    text: ''
+  }[]
+}
+
+const walkText = (node: ReactTestRendererNode, inheritedProps: any = {}): any => {
+  if (typeof node === 'string') {
+    return { type: 'plain', props: inheritedProps, text: node }
+  }
+
+  const { type, props, children } = node
+
+  if (type === 'br') {
+    return node
+  }
+
+  if (type === 'text' && children) {
+    return children.map(child => {
+      return walkText(child, { ...inheritedProps, ...props, })
+    })
+  }
 }
 
 const render = (node: LayoutedTestRendererJSON) => {
