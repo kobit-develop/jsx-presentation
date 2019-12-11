@@ -46,7 +46,7 @@
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": [
       "node_modules/@types",
-      "@types"
+      "src/types"
     ],
     /* List of folders to include type definitions from. */
     // "types": [],                           /* Type declaration files to be included in compilation. */
@@ -66,7 +66,7 @@
   },
   "include": [
     "src/**/*",
-    "@types/**/*"
+    "src/types/**/*"
   ],
   "exclude": [
     "src/**/*.test.tsx"
