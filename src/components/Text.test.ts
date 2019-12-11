@@ -54,6 +54,8 @@ describe('renderParagraph', () => {
     const xmlNode = renderParagraph(tree)
     const xml = react2xml(xmlNode)
 
+    expect(xml.includes('a:r')).toBe(true)
+    expect(xml.includes('a:br')).toBe(true)
     expect(xml.includes('Hello')).toBe(true)
     expect(xml.includes('World')).toBe(true)
     expect(xml.includes('everyone')).toBe(true)
