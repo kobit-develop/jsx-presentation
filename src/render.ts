@@ -3,9 +3,9 @@ import testRenderer, { ReactTestRendererJSON, ReactTestRendererNode } from 'reac
 import { YogaNode } from 'yoga-layout'
 import react2xml from 'react2xml'
 
-import Table from './components/Table'
-import Text from './components/Text'
-import Chart from './components/Chart'
+import { buildXML as buildTableXML } from './components/Table'
+import { buildXML as buildTextXML } from './components/Text'
+import { buildXML as buildChartXML } from './components/Chart'
 
 import { render as renderChart } from './charts'
 import buildTree from './buildTree'
@@ -79,9 +79,9 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
         h('p:clrMapOvr', {}, h('a:masterClrMapping'))
       )
     case 'table':
-      return Table(node)
+      return buildTableXML(node)
     case 'text':
-      return Text(node)
+      return buildTextXML(node)
     case 'fragment':
       if (!node.children) throw 'Framgent must have children'
       return h(React.Fragment, {}, node.children.map(child => renderer(child)))
@@ -103,7 +103,7 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
 
       currentSlide.relationships.push(relationship)
 
-      return Chart(node, relationship)
+      return buildChartXML(node, relationship)
     default:
       console.log('unknown node: ' + node.type)
       return null
