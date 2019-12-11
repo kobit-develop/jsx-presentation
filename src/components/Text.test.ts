@@ -53,7 +53,7 @@ describe('flattenText', () => {
 describe('renderParagraph', () => {
   it('generate xmlNode with text', () => {
     const xmlNode = renderParagraph(tree)
-    const xml = react2xml(xmlNode!)
+    const xml = react2xml(xmlNode)
 
     expect(xml.includes('Hello')).toBe(true)
     expect(xml.includes('World')).toBe(true)

@@ -32,7 +32,7 @@ const renderFill = (fill?: FillType) => {
 }
 
 export const renderParagraph = (node: LayoutedTestRendererJSON) => {
-  if (!node.children) { return }
+  if (!node.children) { throw new Error('Invalid Text. Text must have children') }
   const flattenNodes = flattenText(node)
   const paragraph = (flattenNodes.map((node, key) => {
     const { fontSize, color, bold } = (node.props as TextProps)
