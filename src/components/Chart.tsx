@@ -17,7 +17,7 @@ export const Chart: React.FC<ChartProps & LayoutProps> = (props) => {
   return <chart {...props} />
 }
 
-const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
+export const buildXML = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
   const { width, height, left, top } = node.layout!
   const { rId } = relationship
 
@@ -52,5 +52,3 @@ const render = (node: LayoutedTestRendererJSON, relationship: Relationship) => {
     )
   )
 }
-
-export default render

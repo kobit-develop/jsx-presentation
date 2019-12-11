@@ -72,7 +72,7 @@ const renderTableRow = (attrs: any, children: React.ReactNode[]) => {
   ])
 }
 
-const render = (node: LayoutedTestRendererJSON) => {
+export const buildXML = (node: LayoutedTestRendererJSON) => {
   const { width, height, left, top } = node.layout!
 
   if (!node.children) {
@@ -188,5 +188,3 @@ const render = (node: LayoutedTestRendererJSON) => {
     )
   )
 }
-
-export default render

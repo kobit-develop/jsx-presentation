@@ -105,7 +105,7 @@ const walkText = (node: ReactTestRendererNode, inheritedProps: any = {}): any =>
   }
 }
 
-const render = (node: LayoutedTestRendererJSON) => {
+export const buildXML = (node: LayoutedTestRendererJSON) => {
   const { fontSize, color, bold, verticalAlign } = (node.props as TextProps)
   const { fill } = (node.props as Partial<ShapeProps>)
   const { width, height, left, top } = node.layout!
@@ -157,5 +157,3 @@ const render = (node: LayoutedTestRendererJSON) => {
     )
   )
 }
-
-export default render
