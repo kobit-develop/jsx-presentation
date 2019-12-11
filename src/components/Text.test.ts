@@ -1,4 +1,3 @@
-
 import { ReactTestRendererJSON } from 'react-test-renderer'
 import { flattenText, renderParagraph } from './Text'
 import react2xml from 'react2xml'

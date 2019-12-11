@@ -83,7 +83,7 @@ export const flattenText = (tree: ReactTestRendererJSON) => {
   return [].concat.apply([], walkText(tree)) as {
     type: 'plain' | 'br'
     props: any,
-    text: ''
+    text?: string
   }[]
 }
 
