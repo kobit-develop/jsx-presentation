@@ -6,6 +6,7 @@ import react2xml from 'react2xml'
 import { buildXML as buildTableXML } from './components/Table'
 import { buildXML as buildTextXML } from './components/Text'
 import { buildXML as buildChartXML } from './components/Chart'
+import { buildXML as buildSlideXML } from './components/Slide'
 
 import { render as renderChart } from './charts'
 import buildTree from './buildTree'
@@ -47,37 +48,8 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
   if (typeof node == 'string') return node
   switch (node.type) {
     case 'slide':
-      return h(
-        'p:sld',
-        {
-          'xmlns:a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
-          'xmlns:r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
-          'xmlns:p': 'http://schemas.openxmlformats.org/presentationml/2006/main'
-        },
-        h(
-          'p:cSld',
-          {},
-          h('p:spTree', {},
-            h('p:nvGrpSpPr', {},
-              h('p:cNvPr', { id: 1, name: '' }),
-              h('p:cNvGrpSpPr'),
-              h('p:nvPr')
-            ),
-            h(
-              'p:grpSpPr',
-              {},
-              h('a:xfrm', {},
-                h('a:off', { x: '0', y: '0' }),
-                h('a:ext', { cx: '0', cy: '0' }),
-                h('a:chOff', { x: '0', y: '0' }),
-                h('a:chExt', { cx: '0', cy: '0' })
-              )
-            ),
-            ...node.children!.map(child => renderer(child))
-          )
-        ),
-        h('p:clrMapOvr', {}, h('a:masterClrMapping'))
-      )
+      const children = node.children!.map(child => renderer(child))
+      return buildSlideXML(node, children)
     case 'table':
       return buildTableXML(node)
     case 'text':
