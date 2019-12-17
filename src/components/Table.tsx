@@ -15,46 +15,49 @@ export const TableRow: React.FC<LayoutProps> = ({ children, ...props }) => {
   </tr>
 }
 
-export const TableCell: React.FC<{
-  backgroundColor: string
-} & LayoutProps> = ({ children, ...props }) => {
+interface TableCellProps {
+  backgroundColor?: string
+}
+
+export const TableCell: React.FC<TableCellProps & LayoutProps> = ({ children, ...props }) => {
   return <td {...props}>
     {children}
   </td>
 }
 
-const renderTableText = (node: LayoutedTestRendererJSON, key: number) => {
-  return h('a:txBody', { key },
+const TableTextXML : React.FC<{
+  node: LayoutedTestRendererJSON
+}> = ({ node }) => {
+  return h('a:txBody', {},
     h('a:bodyPr', {}),
     h('a:lstStyle', {}),
     renderParagraph(node)
   )
 }
 
-const renderTableCell = (attrs: any, children: LayoutedTestRendererJSON[], key: number) => {
+const TableCellXML: React.FC<TableCellProps> = ({backgroundColor, children}) => {
   const cellProps = [
-    attrs.backgroundColor &&
+    backgroundColor &&
     h('a:solidFill', {},
-      h('a:srgbClr', { val: attrs.backgroundColor }, h('a:alpha', { val: '100.00%' }))
+      h('a:srgbClr', { val: backgroundColor }, h('a:alpha', { val: '100.00%' }))
     )
   ].filter(property => property)
 
-  children.forEach(child => {
-    if (child.type !== 'text') throw new Error('TableCell must have Text')
-  })
-
-  return h('a:tc', { key },
-    children.map((child, key) => renderTableText(child, key)),
+  return h('a:tc', {},
+    children,
     h('a:tcPr', {}, ...cellProps)
   )
 }
 
-const renderTableRow = (attrs: any, children: React.ReactNode[], key: number) => {
-  return h('a:tr', { h: attrs.rowHeight, key }, [
-    ...children,
+const TableRowXML: React.FC<{
+  rowHeight: number
+  columnCount: number
+}> = ({rowHeight, columnCount, children}) => {
+  return h('a:tr', { h: rowHeight },
+    children,
     h(
       'a:extLst',
-      { key: children.length },
+      { key: columnCount },
       h(
         'a:ext',
         {
@@ -66,7 +69,7 @@ const renderTableRow = (attrs: any, children: React.ReactNode[], key: number) =>
         })
       )
     )
-  ])
+  )
 }
 
 export const buildXML = (node: LayoutedTestRendererJSON) => {
@@ -172,12 +175,13 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
             })
           ),
           rows.map((row, rowIndex) => {
-            return renderTableRow(
-              { rowHeight: row.layout.height },
-              row.children.map((cell, cellIndex) => {
-                return renderTableCell(cell.props, cell.children, cellIndex)
-              }), rowIndex
-            )
+            return <TableRowXML rowHeight={row.layout.height} columnCount={row.children.length} key={rowIndex} >
+              {row.children.map((cell, cellIndex) => {
+                return <TableCellXML {...cell.props} key={cellIndex}>
+                  {(cell.children as LayoutedTestRendererJSON[]).map((child, key) => <TableTextXML node={child} key={key} />)}
+                </TableCellXML>
+              })}
+            </TableRowXML>
           })
         )
       )
