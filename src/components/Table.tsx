@@ -29,7 +29,7 @@ const renderTableText = (node: LayoutedTestRendererJSON, key: number) => {
   )
 }
 
-const renderTableCell = (attrs: any, children: LayoutedTestRendererJSON[]) => {
+const renderTableCell = (attrs: any, children: LayoutedTestRendererJSON[], key: number) => {
   const cellProps = [
     attrs.backgroundColor &&
     h('a:solidFill', {},
@@ -42,18 +42,18 @@ const renderTableCell = (attrs: any, children: LayoutedTestRendererJSON[]) => {
   })
 
   // 許容するやつ text
-  return h('a:tc', {},
+  return h('a:tc', { key },
     children.map((child, key) => renderTableText(child, key)),
-    h('a:tcPr', {}, cellProps)
+    h('a:tcPr', {}, ...cellProps)
   )
 }
 
-const renderTableRow = (attrs: any, children: React.ReactNode[]) => {
-  return h('a:tr', { h: attrs.rowHeight }, [
+const renderTableRow = (attrs: any, children: React.ReactNode[], key: number) => {
+  return h('a:tr', { h: attrs.rowHeight, key }, [
     ...children,
     h(
       'a:extLst',
-      {},
+      { key: children.length },
       h(
         'a:ext',
         {
@@ -86,7 +86,6 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
       throw 'invalid child type'
     }
   })
-
 
   return h('p:graphicFrame', {},
     h('p:nvGraphicFramePr', {},
@@ -151,10 +150,10 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
           h(
             'a:tblGrid',
             {},
-            headerRow.children.map((cell) => {
+            headerRow.children.map((cell, key) => {
               return h(
                 'a:gridCol',
-                { w: cell.layout!.width },
+                { w: cell.layout!.width, key },
                 h(
                   // https://docs.microsoft.com/ja-jp/dotnet/api/documentformat.openxml.drawing.extensionlist?view=openxml-2.8.1
                   'a:extLst',
@@ -171,12 +170,12 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
               )
             })
           ),
-          rows.map(row => {
+          rows.map((row, rowIndex) => {
             return renderTableRow(
               { rowHeight: row.layout.height },
-              row.children.map(cell => {
-                return renderTableCell(cell.props, cell.children)
-              })
+              row.children.map((cell, cellIndex) => {
+                return renderTableCell(cell.props, cell.children, cellIndex)
+              }), rowIndex
             )
           })
         )
