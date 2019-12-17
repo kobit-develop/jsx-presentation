@@ -14,7 +14,7 @@ Use this template.
   - [ ] Charts
     - [ ] Bar chart
     - [ ] Pie chart
-  - [ ] Nested Text
+  - [x] Nested Text
   - [ ] Shape
   - [ ] Image
 - [ ] Gradient

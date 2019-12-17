@@ -5,6 +5,10 @@
   "types": "lib/index.d.ts",
   "author": "mottox2 <y.mottox2@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kobit-develop/jsx-presentation.git"
+  },
   "dependencies": {
     "jszip": "^3.2.2",
     "react": "^16.8.6",
