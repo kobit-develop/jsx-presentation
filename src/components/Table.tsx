@@ -3,19 +3,21 @@ import { LayoutedTestRendererJSON, LayoutProps } from '../render'
 import { renderParagraph } from './Text'
 const h = React.createElement
 
-export const Table: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+export const Table: React.FC<LayoutProps> = ({ children, ...props }) => {
   return <table {...props}>
     {children}
   </table>
 }
 
-export const TableRow: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+export const TableRow: React.FC<LayoutProps> = ({ children, ...props }) => {
   return <tr {...props}>
     {children}
   </tr>
 }
 
-export const TableCell: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+export const TableCell: React.FC<{
+  backgroundColor: string
+} & LayoutProps> = ({ children, ...props }) => {
   return <td {...props}>
     {children}
   </td>
@@ -38,10 +40,9 @@ const renderTableCell = (attrs: any, children: LayoutedTestRendererJSON[], key: 
   ].filter(property => property)
 
   children.forEach(child => {
-    if (child.type !== 'text') throw new Error('aaaaaaa')
+    if (child.type !== 'text') throw new Error('TableCell must have Text')
   })
 
-  // 許容するやつ text
   return h('a:tc', { key },
     children.map((child, key) => renderTableText(child, key)),
     h('a:tcPr', {}, ...cellProps)
