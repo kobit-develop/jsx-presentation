@@ -1,6 +1,6 @@
 {
   "name": "jsx-presentation",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "mottox2 <y.mottox2@gmail.com>",
