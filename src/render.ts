@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import testRenderer, { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
 import { YogaNode } from 'yoga-layout'
 import react2xml from 'react2xml'
@@ -44,11 +44,11 @@ const store: Store = {
 }
 
 // renderer-json to xml
-const renderer: any = (node: ReactTestRendererJSON | string) => {
+const renderer = (node: ReactTestRendererJSON | string) : React.ReactElement<any, any> | string => {
   if (typeof node == 'string') return node
   switch (node.type) {
     case 'slide':
-      const children = node.children!.map(child => renderer(child))
+      const children = node.children!.map(child => renderer(child)) as React.ReactElement[]
       return buildSlideXML(node, children)
     case 'table':
       return buildTableXML(node)
@@ -77,8 +77,7 @@ const renderer: any = (node: ReactTestRendererJSON | string) => {
 
       return buildChartXML(node, relationship)
     default:
-      console.log('unknown node: ' + node.type)
-      return null
+      throw new Error('Unknown node: ' + node.type)
   }
 }
 
@@ -109,7 +108,7 @@ export const renderSlide = (rendererJSON: ReactTestRendererJSON, store: Store) =
     { rId: 1, type: 'slideLayout', id: 1 }
   ]
   store.slides.push({ relationships })
-  const resultJSX = renderer(tree, relationships)
+  const resultJSX = renderer(tree) as React.ReactElement
   const result = react2xml(resultJSX)
   return {
     content: result,

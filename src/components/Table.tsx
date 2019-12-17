@@ -1,63 +1,63 @@
 import * as React from 'react'
 import { LayoutedTestRendererJSON, LayoutProps } from '../render'
+import { renderParagraph } from './Text'
 const h = React.createElement
 
-export const Table: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+export const Table: React.FC<LayoutProps> = ({ children, ...props }) => {
   return <table {...props}>
     {children}
   </table>
 }
 
-export const TableRow: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+export const TableRow: React.FC<LayoutProps> = ({ children, ...props }) => {
   return <tr {...props}>
     {children}
   </tr>
 }
 
-export const TableCell: React.FC<any & LayoutProps> = ({ children, ...props }) => {
+interface TableCellProps {
+  backgroundColor?: string
+}
+
+export const TableCell: React.FC<TableCellProps & LayoutProps> = ({ children, ...props }) => {
   return <td {...props}>
     {children}
   </td>
 }
 
-const renderTableText = (attrs: any, text: React.ReactNode[]) => {
+const TableTextXML : React.FC<{
+  node: LayoutedTestRendererJSON
+}> = ({ node }) => {
   return h('a:txBody', {},
     h('a:bodyPr', {}),
     h('a:lstStyle', {}),
-    h('a:p', {},
-      h('a:r', {},
-        h('a:rPr', {
-          kumimoji: '1',
-          lang: 'en-US',
-          altLang: 'ja-JP',
-          dirty: '0'
-        }),
-        h('a:t', {}, text)
-      )
-    )
+    renderParagraph(node)
   )
 }
 
-const renderTableCell = (attrs: any, children: React.ReactNode[]) => {
+const TableCellXML: React.FC<TableCellProps> = ({backgroundColor, children}) => {
   const cellProps = [
-    attrs.backgroundColor &&
+    backgroundColor &&
     h('a:solidFill', {},
-      h('a:srgbClr', { val: attrs.backgroundColor }, h('a:alpha', { val: '100.00%' }))
+      h('a:srgbClr', { val: backgroundColor }, h('a:alpha', { val: '100.00%' }))
     )
   ].filter(property => property)
 
-  return h('a:tc', {}, [
-    ...children,
-    h('a:tcPr', {}, cellProps)
-  ])
+  return h('a:tc', {},
+    children,
+    h('a:tcPr', {}, ...cellProps)
+  )
 }
 
-const renderTableRow = (attrs: any, children: React.ReactNode[]) => {
-  return h('a:tr', { h: attrs.rowHeight }, [
-    ...children,
+const TableRowXML: React.FC<{
+  rowHeight: number
+  columnCount: number
+}> = ({rowHeight, columnCount, children}) => {
+  return h('a:tr', { h: rowHeight },
+    children,
     h(
       'a:extLst',
-      {},
+      { key: columnCount },
       h(
         'a:ext',
         {
@@ -69,14 +69,14 @@ const renderTableRow = (attrs: any, children: React.ReactNode[]) => {
         })
       )
     )
-  ])
+  )
 }
 
 export const buildXML = (node: LayoutedTestRendererJSON) => {
   const { width, height, left, top } = node.layout!
 
   if (!node.children) {
-    return null
+    throw new Error('Table must have children')
   }
   // FIXME
   const rows: {
@@ -90,7 +90,6 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
       throw 'invalid child type'
     }
   })
-
 
   return h('p:graphicFrame', {},
     h('p:nvGraphicFramePr', {},
@@ -155,10 +154,10 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
           h(
             'a:tblGrid',
             {},
-            headerRow.children.map((cell) => {
+            headerRow.children.map((cell, key) => {
               return h(
                 'a:gridCol',
-                { w: cell.layout!.width },
+                { w: cell.layout!.width, key },
                 h(
                   // https://docs.microsoft.com/ja-jp/dotnet/api/documentformat.openxml.drawing.extensionlist?view=openxml-2.8.1
                   'a:extLst',
@@ -175,13 +174,14 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
               )
             })
           ),
-          rows.map(row => {
-            return renderTableRow(
-              { rowHeight: row.layout.height },
-              row.children.map(cell => {
-                return renderTableCell(cell.props, [renderTableText({}, cell.children)])
-              })
-            )
+          rows.map((row, rowIndex) => {
+            return <TableRowXML rowHeight={row.layout.height} columnCount={row.children.length} key={rowIndex} >
+              {row.children.map((cell, cellIndex) => {
+                return <TableCellXML {...cell.props} key={cellIndex}>
+                  {(cell.children as LayoutedTestRendererJSON[]).map((child, key) => <TableTextXML node={child} key={key} />)}
+                </TableCellXML>
+              })}
+            </TableRowXML>
           })
         )
       )
