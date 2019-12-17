@@ -76,7 +76,7 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
   const { width, height, left, top } = node.layout!
 
   if (!node.children) {
-    return null
+    throw new Error('Table must have children')
   }
   // FIXME
   const rows: {

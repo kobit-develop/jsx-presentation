@@ -5,7 +5,7 @@ const h = React.createElement
 
 export const Slide: React.FC<LayoutProps> = ({ children, ...props }) => <slide {...props}>{children}</slide>
 
-export const buildXML = (node: LayoutedTestRendererJSON, children: React.DOMElement<any, any>[]) => {
+export const buildXML = (node: LayoutedTestRendererJSON, children: React.ReactElement<any, any>[]) => {
   return h(
     'p:sld',
     {
