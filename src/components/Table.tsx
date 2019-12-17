@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { LayoutedTestRendererJSON, LayoutProps } from '../render'
+import { renderParagraph } from './Text'
 const h = React.createElement
 
 export const Table: React.FC<any & LayoutProps> = ({ children, ...props }) => {
@@ -20,25 +21,15 @@ export const TableCell: React.FC<any & LayoutProps> = ({ children, ...props }) =
   </td>
 }
 
-const renderTableText = (attrs: any, text: React.ReactNode[]) => {
-  return h('a:txBody', {},
+const renderTableText = (node: LayoutedTestRendererJSON, key: number) => {
+  return h('a:txBody', { key },
     h('a:bodyPr', {}),
     h('a:lstStyle', {}),
-    h('a:p', {},
-      h('a:r', {},
-        h('a:rPr', {
-          kumimoji: '1',
-          lang: 'en-US',
-          altLang: 'ja-JP',
-          dirty: '0'
-        }),
-        h('a:t', {}, text)
-      )
-    )
+    renderParagraph(node)
   )
 }
 
-const renderTableCell = (attrs: any, children: React.ReactNode[]) => {
+const renderTableCell = (attrs: any, children: LayoutedTestRendererJSON[]) => {
   const cellProps = [
     attrs.backgroundColor &&
     h('a:solidFill', {},
@@ -46,10 +37,15 @@ const renderTableCell = (attrs: any, children: React.ReactNode[]) => {
     )
   ].filter(property => property)
 
-  return h('a:tc', {}, [
-    ...children,
+  children.forEach(child => {
+    if (child.type !== 'text') throw new Error('aaaaaaa')
+  })
+
+  // 許容するやつ text
+  return h('a:tc', {},
+    children.map((child, key) => renderTableText(child, key)),
     h('a:tcPr', {}, cellProps)
-  ])
+  )
 }
 
 const renderTableRow = (attrs: any, children: React.ReactNode[]) => {
@@ -179,7 +175,7 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
             return renderTableRow(
               { rowHeight: row.layout.height },
               row.children.map(cell => {
-                return renderTableCell(cell.props, [renderTableText({}, cell.children)])
+                return renderTableCell(cell.props, cell.children)
               })
             )
           })
