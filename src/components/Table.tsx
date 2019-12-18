@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { LayoutedTestRendererJSON, LayoutProps } from '../render'
+import { LayoutedTestRendererJSON } from '../render'
+import { LayoutProps } from '../buildTree'
 import { renderParagraph } from './Text'
 const h = React.createElement
 
