@@ -81,14 +81,6 @@ const renderer = (node: ReactTestRendererJSON | string) : React.ReactElement<any
   }
 }
 
-export interface LayoutProps {
-  padding?: number
-  width?: number
-  height?: number
-  flexGrow?: number
-  flexDirection?: 'row' | 'column'
-}
-
 const logNode = (node: YogaNode, depth = 0) => {
   const { left, top, width, height } = node.getComputedLayout()
   const flexGrow = node.getFlexGrow()

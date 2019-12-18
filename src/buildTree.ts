@@ -8,6 +8,11 @@ export interface LayoutProps {
   paddingRight?: number
   paddingBottom?: number
   paddingLeft?: number
+  margin?: number
+  marginTop?: number
+  marginRight?: number
+  marginBottom?: number
+  marginLeft?: number
   width?: number
   height?: number
   flexGrow?: number
@@ -29,7 +34,10 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
     node.setFlexDirection(yoga.FLEX_DIRECTION_ROW)
   }
 
-  const { flexGrow, flexDirection, height, width, padding, paddingTop, paddingRight, paddingBottom, paddingLeft } = tree.props as LayoutProps
+  const { flexGrow, flexDirection, height, width,
+    padding, paddingTop, paddingRight, paddingBottom, paddingLeft,
+    margin, marginTop, marginRight, marginBottom, marginLeft,
+  } = tree.props as LayoutProps
 
   if (flexDirection) {
     node.setFlexDirection({
@@ -37,16 +45,16 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
       column: yoga.FLEX_DIRECTION_COLUMN
     }[flexDirection])
   }
-  if (padding) {
-    node.setPadding(yoga.EDGE_TOP, mmToEmus(padding))
-    node.setPadding(yoga.EDGE_RIGHT, mmToEmus(padding))
-    node.setPadding(yoga.EDGE_BOTTOM, mmToEmus(padding))
-    node.setPadding(yoga.EDGE_LEFT, mmToEmus(padding))
-  }
+  if (padding) node.setPadding(yoga.EDGE_ALL, mmToEmus(padding))
   if (paddingTop) node.setPadding(yoga.EDGE_TOP, mmToEmus(paddingTop))
-  if (paddingRight) node.setPadding(yoga.EDGE_TOP, mmToEmus(paddingRight))
-  if (paddingBottom) node.setPadding(yoga.EDGE_TOP, mmToEmus(paddingBottom))
-  if (paddingLeft) node.setPadding(yoga.EDGE_TOP, mmToEmus(paddingLeft))
+  if (paddingRight) node.setPadding(yoga.EDGE_RIGHT, mmToEmus(paddingRight))
+  if (paddingBottom) node.setPadding(yoga.EDGE_BOTTOM, mmToEmus(paddingBottom))
+  if (paddingLeft) node.setPadding(yoga.EDGE_LEFT, mmToEmus(paddingLeft))
+  if (margin) node.setMargin(yoga.EDGE_ALL, mmToEmus(margin))
+  if (marginTop) node.setMargin(yoga.EDGE_TOP, mmToEmus(marginTop))
+  if (marginRight) node.setMargin(yoga.EDGE_RIGHT, mmToEmus(marginRight))
+  if (marginBottom) node.setMargin(yoga.EDGE_BOTTOM, mmToEmus(marginBottom))
+  if (marginLeft) node.setMargin(yoga.EDGE_LEFT, mmToEmus(marginLeft))
   if (height) {
     node.setHeight(mmToEmus(height))
   }

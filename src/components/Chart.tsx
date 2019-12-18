@@ -1,4 +1,5 @@
-import { Relationship, LayoutedTestRendererJSON, LayoutProps } from '../render'
+import { Relationship, LayoutedTestRendererJSON } from '../render'
+import { LayoutProps } from '../buildTree'
 
 const React = require('react')
 const h = React.createElement

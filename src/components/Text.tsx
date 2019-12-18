@@ -1,6 +1,8 @@
 import * as React from 'react'
-import { LayoutedTestRendererJSON, LayoutProps } from '../render'
+import { LayoutedTestRendererJSON } from '../render'
+import { LayoutProps } from '../buildTree'
 import { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
+
 const h = React.createElement
 
 interface TextProps {
