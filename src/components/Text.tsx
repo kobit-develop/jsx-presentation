@@ -2,6 +2,7 @@ import * as React from 'react'
 import { LayoutedTestRendererJSON } from '../render'
 import { LayoutProps } from '../buildTree'
 import { ReactTestRendererJSON, ReactTestRendererNode } from 'react-test-renderer'
+import { ShapeProps, ShapeXML } from './Shape'
 
 const h = React.createElement
 
@@ -12,25 +13,8 @@ interface TextProps {
   verticalAlign?: 'top' | 'middle' | 'bottom'
 }
 
-// TODO: gradient
-type FillType = string
-
-interface ShapeProps {
-  fill: FillType
-}
-
 export const Text: React.FC<TextProps & Partial<ShapeProps> & LayoutProps> = ({ children, ...props }) => {
   return <text {...props}>{children}</text>
-}
-
-const renderFill = (fill?: FillType) => {
-  if (!fill) {
-    return h('a:noFill')
-  }
-
-  return h('a:solidFill', {},
-    h('a:srgbClr', { val: fill }, h('a:alpha', { val: '100%' }))
-  )
 }
 
 export const renderParagraph = (node: LayoutedTestRendererJSON) => {
@@ -108,38 +92,15 @@ const walkText = (node: ReactTestRendererNode, inheritedProps: any = {}): any =>
 }
 
 export const buildXML = (node: LayoutedTestRendererJSON) => {
-  const { fontSize, color, bold, verticalAlign } = (node.props as TextProps)
-  const { fill } = (node.props as Partial<ShapeProps>)
-  const { width, height, left, top } = node.layout!
-
+  const shapeProps = (node.props as Partial<ShapeProps>)
+  const { verticalAlign } = (node.props as TextProps)
   const anchor = !!verticalAlign ? {
     'top': 't',
     'middle': 'ctr',
     'bottom': 'b',
   }[verticalAlign] : 't'
-  return h('p:sp', {},
-    // Non-Visual Properties for a Shape
-    h('p:nvSpPr', {},
-      h('p:cNvPr', {
-        id: 4,
-        name: ''
-      }),
-      h('p:cNvSpPr', {
-        txBox: 1
-      }),
-      h('p:nvPr')
-    ),
-    h(
-      'p:spPr',
-      {},
-      h('a:xfrm', {},
-        h('a:off', { x: left, y: top }),
-        h('a:ext', { cx: width, cy: height })
-      ),
-      // Preset geometry
-      h('a:prstGeom', { prst: 'rect' }, h('a:avLst')),
-      renderFill(fill)
-    ),
+
+  return h(ShapeXML, {...shapeProps, ...node.layout!},
     h('p:txBody', {},
       h(
         'a:bodyPr',
