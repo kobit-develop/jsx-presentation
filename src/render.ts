@@ -7,6 +7,7 @@ import { buildXML as buildTableXML } from './components/Table'
 import { buildXML as buildTextXML } from './components/Text'
 import { buildXML as buildChartXML } from './components/Chart'
 import { buildXML as buildSlideXML } from './components/Slide'
+import { buildXML as buildShapeXML } from './components/Shape'
 
 import { render as renderChart } from './charts'
 import buildTree from './buildTree'
@@ -52,6 +53,8 @@ const renderer = (node: ReactTestRendererJSON | string) : React.ReactElement<any
       return buildSlideXML(node, children)
     case 'table':
       return buildTableXML(node)
+    case 'shape':
+      return buildShapeXML(node)
     case 'text':
       return buildTextXML(node)
     case 'fragment':
