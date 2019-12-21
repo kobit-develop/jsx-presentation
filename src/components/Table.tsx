@@ -18,6 +18,7 @@ export const TableRow: React.FC<LayoutProps> = ({ children, ...props }) => {
 
 interface TableCellProps {
   backgroundColor?: string
+  verticalAlign?: 'top' | 'middle' | 'bottom'
 }
 
 export const TableCell: React.FC<TableCellProps & LayoutProps> = ({ children, ...props }) => {
@@ -36,7 +37,12 @@ const TableTextXML : React.FC<{
   )
 }
 
-const TableCellXML: React.FC<TableCellProps> = ({backgroundColor, children}) => {
+const TableCellXML: React.FC<TableCellProps> = ({backgroundColor, verticalAlign, children}) => {
+  const anchor = !!verticalAlign ? {
+    'top': 't',
+    'middle': 'ctr',
+    'bottom': 'b'
+  }[verticalAlign] : undefined
   const cellProps = [
     backgroundColor &&
     h('a:solidFill', {},
@@ -46,7 +52,7 @@ const TableCellXML: React.FC<TableCellProps> = ({backgroundColor, children}) => 
 
   return h('a:tc', {},
     children,
-    h('a:tcPr', {}, ...cellProps)
+    h('a:tcPr', { anchor }, ...cellProps)
   )
 }
 
