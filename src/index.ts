@@ -1,6 +1,7 @@
 export { generate } from './generate'
 export { Presentation } from './components/Presentation'
 export { Slide } from './components/Slide'
+export { Shape } from './components/Shape'
 export { Text } from './components/Text'
 export { Chart } from './components/Chart'
 export { Fragment } from './components/Fragment'
