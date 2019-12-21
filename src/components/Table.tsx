@@ -168,7 +168,7 @@ export const buildXML = (node: LayoutedTestRendererJSON) => {
                     { uri: '{9D8B030D-6E8A-4147-A177-3AD203B41FA5}' },
                     h('a16:colId', {
                       'xmlns:a16': 'http://schemas.microsoft.com/office/drawing/2014/main',
-                      val: '1113064350'
+                      val: 1113064350 + key
                     })
                   )
                 )
