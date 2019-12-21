@@ -10,6 +10,7 @@ interface TextProps {
   color?: string,
   bold?: boolean,
   fontSize?: number
+  textAlign?: 'center' | 'left' | 'right'
   verticalAlign?: 'top' | 'middle' | 'bottom'
 }
 
@@ -19,6 +20,13 @@ export const Text: React.FC<TextProps & Partial<ShapeProps> & LayoutProps> = ({ 
 
 export const renderParagraph = (node: LayoutedTestRendererJSON) => {
   if (!node.children) { throw new Error('Invalid Text. Text must have children') }
+  const { textAlign } = node.props as TextProps
+  const align = {
+    'left': 'l',
+    'center': 'ctr',
+    'right': 'r'
+  }[textAlign || 'left']
+
   const flattenNodes = flattenText(node)
   const paragraph = (flattenNodes.map((node, key) => {
     const { fontSize, color, bold } = (node.props as TextProps)
@@ -37,7 +45,7 @@ export const renderParagraph = (node: LayoutedTestRendererJSON) => {
           h(
             'a:solidFill',
             {},
-            h('a:srgbClr', { val: color }, h('a:alpha', { val: '100.00%' }))
+            h('a:srgbClr', { val: color }, h('a:alpha', { val: 100 * 1000 }))
           ),
           h('a:latin', { typeface: 'Calibri' })
         ),
@@ -52,7 +60,7 @@ export const renderParagraph = (node: LayoutedTestRendererJSON) => {
     h(
       'a:pPr',
       {
-        algn: 'l',
+        algn: align,
         fontAlgn: 'base',
         marL: '0',
         marR: '0',

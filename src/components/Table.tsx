@@ -40,7 +40,7 @@ const TableCellXML: React.FC<TableCellProps> = ({backgroundColor, children}) => 
   const cellProps = [
     backgroundColor &&
     h('a:solidFill', {},
-      h('a:srgbClr', { val: backgroundColor }, h('a:alpha', { val: '100.00%' }))
+      h('a:srgbClr', { val: backgroundColor }, h('a:alpha', { val: 100 * 1000 }))
     )
   ].filter(property => property)
 
