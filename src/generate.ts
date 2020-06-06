@@ -369,7 +369,7 @@ ${slide.relationships
     fs.mkdirSync(outDirName);
   }
 
-  zip.generateAsync({ type: 'nodebuffer' }).then(function (content: any) {
+  return zip.generateAsync({ type: 'nodebuffer' }).then(function (content: any) {
     const timestamp = Number(new Date())
     const filePath = `${outDirName}/${fileName || timestamp}.pptx`
     fs.writeFile(filePath, content, function () {
