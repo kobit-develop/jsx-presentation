@@ -365,13 +365,13 @@ ${slide.relationships
     return
   }
 
+  if (skipGenerate) {
+    return zip.generateAsync({ type: 'nodebuffer' })
+  }
+
   const outDirName = outDir || 'results'
   if (!fs.existsSync(outDirName)) {
     fs.mkdirSync(outDirName);
-  }
-
-  if (skipGenerate) {
-    return zip.generateAsync({ type: 'nodebuffer' })
   }
 
   return zip.generateAsync({ type: 'nodebuffer' }).then(function (content: any) {
