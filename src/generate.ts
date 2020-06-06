@@ -12,10 +12,11 @@ interface Config {
   outDir: string,
   fileName: string
   open: boolean
+  skipGenerate: boolean
 }
 
 export const generate = (tree: JSX.Element, config: Partial<Config>) => {
-  const { dryRun, outDir, fileName, open = false } = config
+  const { dryRun, outDir, fileName, open = false, skipGenerate = false } = config
   const genAppXml = (
     slides: any[] = [],
     companyName = 'My Corp'
@@ -367,6 +368,10 @@ ${slide.relationships
   const outDirName = outDir || 'results'
   if (!fs.existsSync(outDirName)) {
     fs.mkdirSync(outDirName);
+  }
+
+  if (skipGenerate) {
+    return zip.generateAsync({ type: 'nodebuffer' })
   }
 
   return zip.generateAsync({ type: 'nodebuffer' }).then(function (content: any) {
