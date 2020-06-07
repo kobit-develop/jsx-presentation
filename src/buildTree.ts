@@ -17,6 +17,11 @@ export interface LayoutProps {
   height?: number
   flexGrow?: number
   flexDirection?: 'row' | 'column'
+  position?: 'relative' | 'absolute'
+  top?: number
+  right?: number
+  bottom?: number
+  left?: number
 }
 
 /**
@@ -36,7 +41,8 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
 
   const { flexGrow, flexDirection, height, width,
     padding, paddingTop, paddingRight, paddingBottom, paddingLeft,
-    margin, marginTop, marginRight, marginBottom, marginLeft,
+    margin, marginTop, marginRight, marginBottom, marginLeft, position,
+    top, right, bottom, left
   } = tree.props as LayoutProps
 
   if (flexDirection) {
@@ -55,6 +61,17 @@ const composeYogaNode = (tree: ReactTestRendererJSON) => {
   if (marginRight) node.setMargin(yoga.EDGE_RIGHT, mmToEmus(marginRight))
   if (marginBottom) node.setMargin(yoga.EDGE_BOTTOM, mmToEmus(marginBottom))
   if (marginLeft) node.setMargin(yoga.EDGE_LEFT, mmToEmus(marginLeft))
+  if (top) node.setPosition(yoga.EDGE_TOP, mmToEmus(top))
+  if (right) node.setPosition(yoga.EDGE_TOP, mmToEmus(right))
+  if (bottom) node.setPosition(yoga.EDGE_TOP, mmToEmus(bottom))
+  if (left) node.setPosition(yoga.EDGE_LEFT, mmToEmus(left))
+  if (position) {
+    node.setPositionType({
+      relative: yoga.POSITION_TYPE_RELATIVE,
+      absolute: yoga.POSITION_TYPE_ABSOLUTE
+    }[position])
+  }
+
   if (height) {
     node.setHeight(mmToEmus(height))
   }
