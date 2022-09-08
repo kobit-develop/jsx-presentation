@@ -10,7 +10,7 @@
     "url": "https://github.com/kobit-develop/jsx-presentation.git"
   },
   "dependencies": {
-    "jszip": "^3.2.2",
+    "jszip": "^3.7.0",
     "react": "^16.8.6",
     "react-test-renderer": "^16.8.6",
     "react2xml": "^0.2.0",
